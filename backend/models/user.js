@@ -3,10 +3,10 @@ module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define('User', {
     email: DataTypes.STRING,
     username: DataTypes.STRING,
-    firstname: DataTypes.STRING,
-    lastname: DataTypes.STRING,
     password: DataTypes.STRING,
     bio: DataTypes.STRING,
+    firstname: DataTypes.STRING,
+    lastname: DataTypes.STRING,
     profilePhoto: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN
   }, {

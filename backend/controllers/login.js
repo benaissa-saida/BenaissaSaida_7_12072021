@@ -16,6 +16,7 @@ exports.signup = function(req, res) {
     const email    = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
+    const bio = req.body.password;
 
     if (email == null || username == null || password == null) {
       return res.status(400).json({ 'error': 'paramètres manquants' });
@@ -57,7 +58,7 @@ exports.signup = function(req, res) {
           }
         },
         function(userFound, bcryptedPassword, done) { //arguments précisé précédemment
-          var newUser = models.User.create({ //creation new user
+          let newUser = models.User.create({ //creation new user
             email: email,
             username: username,
             password: bcryptedPassword,

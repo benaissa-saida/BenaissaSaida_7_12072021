@@ -4,10 +4,10 @@ const auth = require('../middleware/auth');
 const asyncFonc  = require('async');
 
 exports.findOneProfile = (req, res) => {
-     // Getting auth header
+    // Getting auth header
     const headerAuth  = req.headers['authorization'];
     const userId      = auth.getUserId(headerAuth);
-    
+     
     if (userId < 0){
         res.status(400).json({ 'error': 'mauvais token' });
     }
@@ -29,30 +29,41 @@ exports.findOneProfile = (req, res) => {
 }
 
 exports.findAllProfile = (req, res) =>{
-    // Getting auth header
-    const headerAuth  = req.headers['authorization'];
-    const userId      = auth.getUserId(headerAuth);
+  // Getting auth header
+  const headerAuth  = req.headers['authorization'];
+  const userId      = auth.getUserId(headerAuth);
+   
+  if (userId < 0){
+      res.status(400).json({ 'error': 'mauvais token' });
+  }
 
-    models.User.findAll({
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-        
-    })
-    .then(users => res.status(200).json(users))
-    .catch(error => res.status(400).json({ error }));
+  models.User.findAll({
+    attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+  })
+  .then(users => res.status(200).json(users))
+  .catch(error => res.status(400).json({ error }));
 }
 
 exports.updateUserProfile = function(req, res) {
     // Getting auth header
     const headerAuth  = req.headers['authorization'];
     const userId      = auth.getUserId(headerAuth);
+     
+    if (userId < 0){
+        res.status(400).json({ 'error': 'mauvais token' });
+    }
 
     // Params
+    const firstname = req.body.firstname;
+    const lastname = req.body.lastname;
     const bio = req.body.bio;
+    const profilePhoto = req.body.profilePhoto;
+
 
     asyncFonc.waterfall([
       function(done) {
         models.User.findOne({
-          attributes: ['id', 'bio'],
+          attributes: ['id', 'bio', 'firstname', 'lastname', 'profilePhoto'],
           where: { id: userId }
         }).then(function (userFound) {
           done(null, userFound);
@@ -64,7 +75,10 @@ exports.updateUserProfile = function(req, res) {
       function(userFound, done) {
         if(userFound) {
           userFound.update({
-            bio: (bio ? bio : userFound.bio)
+            firstname: (firstname ? firstname: userFound.firstname),
+            lastname: (lastname ? lastname : userFound.lastname),
+            bio: (bio ? bio : userFound.bio),
+            profilePhoto: (profilePhoto ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : userFound.profilePhoto),
           }).then(function() {
             done(userFound);
           }).catch(function(err) {
