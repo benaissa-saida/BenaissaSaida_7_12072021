@@ -16,7 +16,7 @@ exports.signup = function(req, res) {
     const email    = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
-    const bio = req.body.password;
+    const bio = req.body.bio;
 
     if (email == null || username == null || password == null) {
       return res.status(400).json({ 'error': 'paramètres manquants' });

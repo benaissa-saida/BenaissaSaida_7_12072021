@@ -20,8 +20,8 @@ app.use((req, res, next) => {
 });
 
 // Parser du JSON
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // images in a static file
 app.use("/images", express.static(path.join(__dirname, "images")));

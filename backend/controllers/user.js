@@ -13,7 +13,7 @@ exports.findOneProfile = (req, res) => {
     }
 
     models.User.findOne({
-        attributes: [ 'id', 'email', 'bio', 'firstname', 'lastname', 'profilePhoto' ],
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
         where: { id: userId}
     })
     .then(user => {
