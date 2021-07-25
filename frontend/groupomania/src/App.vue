@@ -14,9 +14,9 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&family=Roboto:ital,wght@1,300&display=swap');
 * {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Noto Sans JP','Roboto', sans-serif;
   margin:0;
   padding: 0;
   box-sizing: border-box;

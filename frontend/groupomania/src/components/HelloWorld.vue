@@ -4,10 +4,7 @@
 
 <script>
 export default {
-  name: ,
-  props: {
-    
-  }
+  
 }
 </script>
 

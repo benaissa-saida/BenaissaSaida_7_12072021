@@ -126,13 +126,8 @@ exports.findAllPost = (req, res) => {
     //   limit = ITEMS_LIMIT;
     // }
 
-    models.Post.findAll({
-      // where: {},
-      include: [{
-        model: models.User,
-        as: 'username'
-      }]
-    }).then(function(posts) {
+    models.Post.findAll()
+    .then(function(posts) {
       if (posts) {
         res.status(200).json(posts);
       } else {

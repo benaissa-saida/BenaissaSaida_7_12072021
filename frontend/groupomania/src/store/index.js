@@ -86,7 +86,7 @@ if (!user) {
     getUserInfos: ({commit}) => {
       instance.get('/users/userId')
       .then(function (response) {
-        commit('userInfos', response.data.userId);
+        commit('userInfos', response.data);
       })
       .catch(function () {
       });
