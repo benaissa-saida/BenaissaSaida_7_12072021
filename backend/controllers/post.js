@@ -1,158 +1,138 @@
 //Imports
 const models    = require('../models');
 const auth = require('../middleware/auth');
-// const asyncFonc  = require('async');
 
-//Constants
-// const TITLE_LIMIT   = 2;
-// const CONTENT_LIMIT = 4;
+// Constants
+const TITLE_LIMIT   = 2;
+const CONTENT_LIMIT = 4;
 // const ITEMS_LIMIT   = 50;
 
 //routes 
 
-exports.createPost = (req, res) => {
-    // Getting auth header
-    // const headerAuth  = req.headers['authorization'];
-    // const userId      = auth.getUserId(headerAuth);
-
-    // // Params
-    // const title   = req.body.title;
-    // const content = req.body.content;
-
-    // if (title == null || content == null) {
-    //   return res.status(400).json({ 'error': 'missing parameters' });
-    // }
-
-    // if (title.length <= TITLE_LIMIT || content.length <= CONTENT_LIMIT) {
-    //   return res.status(400).json({ 'error': 'invalid parameters' });
-    // }
-    
-    // asyncFonc.waterfall([
-    //   function(done) {
-    //     models.User.findOne({
-    //       where: { id: userId }
-    //     })
-    //     .then(function(userFound) {
-    //       done(null, userFound);
-    //     })
-    //     .catch(function(err) {
-    //       return res.status(500).json({ 'error': 'unable to verify user' });
-    //     });
-    //   },
-    //   function(userFound, done) {
-    //     if(userFound) {
-    //       models.Post.create({
-            
-    //         title  : title,
-    //         content: content,
-    //         likes  : 0,
-    //         userId : userFound.id
-    //       })
-    //       .then(function(newPost) {
-    //         done(newPost)
-    //       })
-    //       .catch(error => res.status(500).json({'error': error}))
-    //       console.log('userFound.id', userFound.id)
-    //     } else {
-    //       res.status(404).json({ 'error': 'user not found' });
-    //     }
-    //   },
-    // ], function(newPost) {
-    //   if (newPost) {
-    //     return res.status(201).json(newPost);
-    //   } else {
-    //     return res.status(500).json({ 'error': 'cannot post message' });
-    //   }
-    // });
-
-    const headerAuth  = req.headers['authorization'];
-    const userId      = auth.getUserId(headerAuth);
-
+exports.createPost = (req, res, next) => {
+  const headerAuth  = req.headers['authorization'];
+  const userId      = auth.getUserId(headerAuth);
   
-      const title = req.body.title; 
-      const content = req.body.content; 
-      const attachement = req.body.attachement; 
-  
-  
-      if (title == null || content == null) {
-          return res.status(400).json({ 'error': 'remplir le titre et la description' });
-      }
-      if (title.lenght < 2 || title.lenght > 30 || content.length < 2) {
-          return res.status(400).json({ 'error': ' title:[2min-30max] / content:[2min]' })
-      }
-  
-      models.User.findOne({
-          where: { id: userId }
-  
-      })
-      .then(async function(user){
+  const title = req.body.title; 
+  const content = req.body.content; 
+  const attachment = req.body.attachment;
 
-        if(user){
-            let user = await models.User.findOne({ where: {id : userId} })
-            let newPost = await models.Post.create({
+  if (title == null || content == null) {
+    return res.status(400).json({ 'error': 'Paramètres manquants' });
+  }
 
-               title : title,
-               content : content,
-               attachement : attachement,
-               likes : 0,
-               userId : user.id,
-               
-               
-            }) ;
-            return res.status(201).json({ newPost : newPost });
-            
+  if (title.length <= TITLE_LIMIT || content.length <= CONTENT_LIMIT) {
+    return res.status(400).json({ 'error': 'Paramètres invalides' });
+  }
 
-        }else{
-            res.status(404).json({ 'error': 'user not found' });
-            
-        }
+  models.User.findOne({
+    where: { id: userId }
+  })
+  .then(async function(user){
+    if(user){
+      let user = await models.User.findOne({ where: {id : userId} })
+      let newPost = await models.Post.create({
+        title : title,
+        content : content,
+        attachment : req.file
+        ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+        : attachment,
+        likes : 0,
+        UserId : user.id,
+        userName: user.username,
+      });
+      return res.status(201).json({ newPost : newPost });
+    }else{
+      res.status(404).json({ 'error': 'Utilisateur introuvable' });
+    }
 
-    }).catch(function (err) {
-      return res.status(500).json({ 'error': err });
-    });
+  }).catch(function (err) {
+    return res.status(500).json({ 'error': err });
+  });
 }
 
-// exports.findOnePost = (req, res) => {
+exports.findOnePost = (req, res) => {
+  const headerAuth  = req.headers['authorization'];
+  const postId      = auth.getUserId(headerAuth); 
+    
+  if (postId < 0){
+    res.status(400).json({ 'error': 'mauvais token' });
+  }
 
-// }
+  models.Post.findOne({
+    where: { id: postId }
+  })
+  .then(function(post) {
+    if (post) {
+      res.status(200).json({ post : post });
+    } else {
+      res.status(404).json({ "error": "Aucun post trouvé" });
+    }
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).json({ "error": err });
+  });
+}
 
 exports.findAllPost = (req, res) => {
-    // const fields  = req.query.fields;
-    // const limit   = parseInt(req.query.limit);
-    // const offset  = parseInt(req.query.offset);
-    // const order   = req.query.order;
-
-    // if (limit > ITEMS_LIMIT) {
-    //   limit = ITEMS_LIMIT;
-    // }
-
-    models.Post.findAll()
-    .then(function(posts) {
-      if (posts) {
-        res.status(200).json(posts);
-      } else {
-        res.status(404).json({ "error": "no messages found" });
-      }
-    }).catch(function(err) {
-      console.log(err);
-      res.status(500).json({ "error": err });
-    });
+  models.Post.findAll()
+  .then(function(posts) {
+    if (posts) {
+      res.status(200).json({ posts : posts });
+    } else {
+      res.status(404).json({ "error": "no messages found" });
+    }
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).json({ "error": err });
+  });
 }
 
-// exports.updateOnePost = (req, res, next) => {
-//     const postObject = req.file ? {
-//         ...JSON.parse(req.body.postId), 
-//         attachment: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-//     } : {
-//         ...req.body
-//     };
-//     models.Post.update({id: req.params.id}, {...postObject, id: req.params.id})
-//     .then(() => res.status(200).json({ message: 'Post modifié !'}))
-//     .catch(error => res.status(400).json({ error }))
+exports.updateOnePost = async (req, res, next) => {
+  // Getting auth header
+  const headerAuth  = req.headers['authorization'];
+  const postId      = auth.getUserId(headerAuth);
+  
+  if (postId < 0){
+    res.status(400).json({ 'error': 'mauvais token' });
+  }
+  
+  // Params
+  const {title, content, attachment} = req.body
+ 
+  try{
+    const post = await models.Post.findOne({ where: { id: postId }})
 
-// }
 
-// exports.deleteOnePost = (req, res) => {
+    post.title = title
+    post.content = content
+    post.attachment = attachment
 
-// }
+    await post.save()
+    return res.json({post})
+  }catch (err) {
+    return res.status(500).json({err})
+  }
+}
+
+exports.deleteOnePost = async (req, res) => {
+  // Getting auth header
+  const headerAuth  = req.headers['authorization'];
+  const postId      = auth.getUserId(headerAuth);
+  
+  if (postId < 0){
+    res.status(400).json({ 'error': 'mauvais token' });
+  }
+  
+ 
+  try{
+    const post = await models.Post.findOne({ where: { id: postId }})
+
+
+    await post.destroy()
+    return res.json({ message : 'Post supprimé'})
+  }catch (err) {
+    return res.status(500).json({err})
+  }
+}
 

@@ -33,24 +33,24 @@ if (!user) {
     },
     },
     mutations: {
-    setStatus: function (state, status) {
-      state.status = status;
-    },
-    logUser: function (state, user) {
-      instance.defaults.headers.common['Authorization'] = user.token;
-      localStorage.setItem('user', JSON.stringify(user));
-      state.user = user;
-    },
-    userInfos: function (state, userInfos) {
-      state.userInfos = userInfos;
-    },
-    logout: function (state) {
-      state.user = {
-        userId: -1,
-        token: '',
-      }
-      localStorage.removeItem('user');
-    }
+      setStatus: function (state, status) {
+        state.status = status;
+      },
+      logUser: function (state, user) {
+        instance.defaults.headers.common['Authorization'] = user.token;
+        localStorage.setItem('user', JSON.stringify(user));
+        state.user = user;
+      },
+      userInfos: function (state, userInfos) {
+        state.userInfos = userInfos;
+      },
+      logout: function (state) {
+        state.user = {
+          userId: -1,
+          token: '',
+        }
+        localStorage.removeItem('user');
+      },
     },
     actions: {
     login: ({commit}, userInfos) => {

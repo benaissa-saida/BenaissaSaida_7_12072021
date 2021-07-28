@@ -106,6 +106,7 @@ export default {
 
 <style scoped>
 #body-card{
+  background-image: linear-gradient(137deg, #fd2c02 0%, #ffd7d7 100%);
   display: flex;
   align-items: center;
   justify-content: center;

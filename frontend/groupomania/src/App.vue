@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-  <router-view></router-view>
+    <router-view />
   </div>
 </template>
 
@@ -8,7 +8,6 @@
 export default {
   name: 'App',
   components: {
-  
   }
 }
 </script>
@@ -23,8 +22,5 @@ export default {
 }
 #app {
   max-width: 100%;
-}
-body {
-  background-image: linear-gradient(137deg, #fd2c02 0%, #ffd7d7 100%);
 }
 </style>
