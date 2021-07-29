@@ -51,20 +51,19 @@ exports.createPost = (req, res, next) => {
   });
 }
 
-exports.findOnePost = (req, res) => {
-  const headerAuth  = req.headers['authorization'];
-  const postId      = auth.getUserId(headerAuth); 
-    
+exports.findOnePost = async (req, res) => {
+  const postId      = req.params.postId
+   
   if (postId < 0){
-    res.status(400).json({ 'error': 'mauvais token' });
+      res.status(400).json({ 'error': 'paramètres invalides' });
   }
-
+  
   models.Post.findOne({
-    where: { id: postId }
+    where: { id: postId },
   })
   .then(function(post) {
     if (post) {
-      res.status(200).json({ post : post });
+      res.status(200).json({ post: post });
     } else {
       res.status(404).json({ "error": "Aucun post trouvé" });
     }
@@ -80,7 +79,7 @@ exports.findAllPost = (req, res) => {
     if (posts) {
       res.status(200).json({ posts : posts });
     } else {
-      res.status(404).json({ "error": "no messages found" });
+      res.status(404).json({ "error": "no post found" });
     }
   }).catch(function(err) {
     console.log(err);

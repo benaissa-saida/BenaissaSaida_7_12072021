@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+ 
+  <router-view />
+
 </template>
 
 <script>
@@ -20,7 +20,5 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-#app {
-  max-width: 100%;
-}
+
 </style>

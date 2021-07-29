@@ -3,15 +3,14 @@ const express = require('express');
 const router = express.Router();
 
 const postCtrl = require('../controllers/post');
-const auth = require('../middleware/auth');
 const multer = require('../middleware/multer');
 
 
 //Router
 router.post('/new',  postCtrl.createPost)
 
-router.get('/postId', postCtrl.findOnePost);
-router.get('/', auth.getAuthorization, postCtrl.findAllPost);
+router.get('/:postId', postCtrl.findOnePost);
+router.get('/', postCtrl.findAllPost);
 
 router.put('/postId',  postCtrl.updateOnePost);
 

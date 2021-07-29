@@ -1,7 +1,5 @@
 <template>
-  <div id="nav">
-    <!-- side nav -->
-    <div class="lg:w-1/5 border-r border-red-50 px-2 lg:px-3 py-1 flex flex-col justify-between">
+   <div class="lg:w-1/5 border-r border-lighter px-2 lg:px-2 py-2 flex flex-col justify-between">
       <div>
         <div class="svg-container">
           <a href='http://localhost:8080/home'>
@@ -12,73 +10,66 @@
           <a href='http://localhost:8080/home' title='Accueil'>
             <button class="focus:outline-none hover:text-red-50 flex items-center py-2 px-4 hover:bg-red-600 rounded-full mr-auto mb-3 ">
               <i class="fas fa-home text-2xl mr-4 text-left"></i>
-              <p class="text-lg font-semibold text-left hidden lg:block"> Home </p>
+              <p class="text-lg font-semibold text-left hidden lg:block">Accueil</p>
             </button>
           </a>
           <a href='http://localhost:8080/profile' title='Profil'>
             <button class="focus:outline-none hover:text-red-50 flex items-center py-2 px-4 hover:bg-red-600 rounded-full mr-auto mb-3">
               <i class="far fa-user text-2xl mr-4 text-left"></i>
-              <p class="text-lg font-semibold text-left hidden lg:block"> Profile </p>
+              <p class="text-lg font-semibold text-left hidden lg:block">Profile</p>
             </button>
-            </a>
+          </a>
           <!-- Not working button -->
-          <button :key="tab" v-for="tab in tabs"  @click="id = tab.id" :title='`${ tab.title }`' :class="`focus:outline-none hover:text-red-50 flex items-center py-2 px-4 hover:bg-red-600 rounded-full mr-auto mb-3 ${ id === tab.id ? 'text-blue' : ''}`">
+          <button :key="tab" v-for="tab in tabs" @click="id = tab.id" :title='`${ tab.title }`' :class="`focus:outline-none hover:text-red-50 flex items-center py-2 px-4 hover:bg-red-600 rounded-full mr-auto mb-3 ${ id === tab.id ? 'text-blue' : ''}`">
             <i :class="`${ tab.icon } text-2xl mr-4 text-left`"></i>
             <p class="text-lg font-semibold text-left hidden lg:block"> {{ tab.title }} </p>
           </button>
         </div>
-          <a title="Mes_postes" href="#">
-            <button class="text-red-50 bg-red-600 rounded-full font-semibold focus:outline-none w-12 h-12 lg:h-auto lg:w-full p-3 hover:bg-darkblue">
-              <p class="hidden lg:block">Mes Postes</p>
-              <i class="fas fa-plus lg:hidden"></i>
-            </button>
-          </a>
+        <a title="poste" href="#">
+          <button class="text-red-50 bg-red-600 rounded-full font-semibold focus:outline-none w-12 h-12 lg:h-auto lg:w-full p-3 hover:bg-darkblue">
+            <p class="hidden lg:block">Poste</p>
+            <i class="fas fa-plus lg:hidden"></i>
+          </button>
+        </a>
       </div>
-      <div class="lg:w-full relative">
-        <button @click="dropdown = true" class="flex hover:text-red-50 items-center w-full hover:bg-red-600 rounded-full p-2 focus:outline-none">
-          <img src="" class="w-10 h-10 rounded-full " />
-          <div class="hidden lg:block ml-4">
-            <p class="text-sm font-bold leading-tight"> {{ user.username }} </p>
-          </div>
-          <i class="hidden lg:block fas fa-angle-down ml-auto text-lg"></i>
-        </button>
-        <div v-if="dropdown === true" class="absolute text-red-50 bottom-0 left-0 w-64 rounded-lg shadow-md border-red-500 bg-red-500 mb-16">
-          <button @click="dropdown = false" class="p-3 flex items-center w-full hover:bg-red-400 p-2 focus:outline-none">
-            <img src="" class="w-10 h-10 rounded-full " />
-            <div class="ml-4">
+      <div class="lg:w-full  relative">
+          <button @click="dropdown = true" class="flex hover:text-red-50 items-center w-full hover:bg-red-600 rounded-full p-2 focus:outline-none">
+            <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
+            <img v-else src="{{ user.profilePhoto }}" class="h-12 w-12 rounded-full flex-none"/>
+            <div class="hidden lg:block ml-4">
               <p class="text-sm font-bold leading-tight"> {{ user.username }} </p>
             </div>
-            <i class="fas fa-check ml-auto test-blue"></i>
+            <i class="hidden lg:block fas fa-angle-down ml-auto text-lg"></i>
           </button>
-          <span @click="logout()">
-            <button @click="dropdown = false" class="w-full text-left hover:bg-red-400 border-t border-red-600 p-3 test-sm focus:outline-none">
-              Déconnexion
-            </button> 
-          </span>
+          <div v-if="dropdown === true" class="absolute text-red-50 bottom-0 left-0 w-64 rounded-lg shadow-md border-red-500 bg-red-500 mb-16">
+            <button @click="dropdown = false" class="p-3 flex items-center w-full hover:bg-red-400 p-2 focus:outline-none">
+              <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
+              <img v-else src="{{ user.profilePhoto }}" class="h-10 w-10 rounded-full flex-none"/>
+              <div class="ml-4">
+                <p class="text-sm font-bold leading-tight"> {{ user.username }} </p>
+              </div>
+              <i class="fas fa-check ml-auto test-blue"></i>
+            </button>
+            <span @click="logout()">
+              <button @click="dropdown = false" class="w-full text-left hover:bg-red-400 border-t border-red-600 p-3 test-sm focus:outline-none">
+                Déconnexion
+              </button> 
+            </span>
+          </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 export default {
-  mounted: function () {
-    console.log(this.$store.state.user);
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push('/');
-      return ;
-    }
-    this.$store.dispatch('getUserInfos');
-  },
   data() {
     return {
       tabs: [
-        {icon: 'fas fa-hashtag', title: 'Explore', id: 'explore'},
+        {icon: 'fas fa-hashtag', title: 'Explorer', id: 'explorer'},
         {icon: 'far fa-bell', title: 'Notifications', id: 'notifications'},
         {icon: 'far fa-envelope', title: 'Messages', id: 'messages'},
-        {icon: 'fas fa-ellipsis-h', title: 'More', id: 'more'}
+        {icon: 'fas fa-ellipsis-h', title: 'Plus', id: 'plus'}
       ],
       id: 'Explore',
       dropdown: false,    
@@ -100,12 +91,14 @@ export default {
 </script>
 
 <style scoped>
-#nav{
+/* #nav{
   display: flex;
   height: 100vh;
   width: 100%;
-}
+} */
 svg{
   width: 11.5rem;
-} 
+}
+
+ 
 </style>
