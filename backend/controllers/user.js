@@ -78,12 +78,10 @@ exports.updateUserProfile = function(req, res) {
 }
 
 exports.deleteOneUser = async (req, res) => {
-  // Getting auth header
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
+  const userId      = req.params.userId
   
   if (userId < 0){
-    res.status(400).json({ 'error': 'mauvais token' });
+    res.status(400).json({ 'error': 'Paramètres invalide' });
   }
   
  

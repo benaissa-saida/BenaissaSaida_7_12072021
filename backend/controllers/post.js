@@ -115,12 +115,10 @@ exports.updateOnePost = async (req, res, next) => {
 }
 
 exports.deleteOnePost = async (req, res) => {
-  // Getting auth header
-  const headerAuth  = req.headers['authorization'];
-  const postId      = auth.getUserId(headerAuth);
+  const postId      = req.params.postId
   
   if (postId < 0){
-    res.status(400).json({ 'error': 'mauvais token' });
+    res.status(400).json({ 'error': 'Paramètres invalide' });
   }
   
  

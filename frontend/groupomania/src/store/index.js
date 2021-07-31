@@ -36,6 +36,7 @@ const store = createStore({
       profilePhoto: '',
     },
     posts: [],
+
   },
   mutations: {
     setStatus: function (state, status) {
@@ -57,6 +58,10 @@ const store = createStore({
       localStorage.removeItem('user');
     },
     getPosts: function (state, posts) {
+      state.posts = posts;
+    },
+    deletePost: function (state, post){
+      let posts = state.posts.filter(p => p.id != post.id)
       state.posts = posts;
     },
   },
@@ -99,28 +104,25 @@ const store = createStore({
       .catch(function () {
       });
     }, 
-    createPost: ({commit}, postInfos) => {
-      commit('setStatus', 'loading');
-      return new Promise((resolve, reject) => {
-        commit;
-        instance.post('/posts/new', postInfos)
-        .then(function (response){
-          commit('setStatus', 'createdPost');
-          resolve(response)
-        }).catch(function (error) {
-          commit('setStatus', 'error_create');
-          reject(error);
-        });
-      });
-    },
     getPostsInfos: ({commit}) => {
       instance.get('/posts')
       .then(function(response) {
         commit('getPosts', response.data.posts)
+        console.log(response.data)
       }).catch(function(){
 
       })
     },
+    deletePost: ({commit}, post) => {
+      instance.delete(`/posts/${post.id}`)
+      .then(function(response){
+        if (response.status == 200 || response.status == 204)
+        commit('deletePost', post.id)
+      })
+      .catch(function() {
+
+      })
+    }
   }
 })
     

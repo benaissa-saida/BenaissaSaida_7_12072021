@@ -1,5 +1,5 @@
 <template>
-  <div id='home' class="flex container h-screen w-full">
+  <div id='home' class="flex  h-screen w-full">
     <Nav />
     <Postes />
   </div>
@@ -14,7 +14,6 @@ export default {
     if (this.$store.state.user.userId == -1) {
       this.$router.push('/');
       return ;
-      
     }
     this.$store.dispatch('getUserInfos');
     this.$store.dispatch('getPostsInfos');

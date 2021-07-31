@@ -12,6 +12,6 @@ router.get('/', userCtrl.findAllProfile);
 
 router.put('/userId', multer , userCtrl.updateUserProfile);
 
-router.delete('/userId', userCtrl.deleteOneUser)
+router.delete('/:userId', userCtrl.deleteOneUser)
 
 module.exports = router;
