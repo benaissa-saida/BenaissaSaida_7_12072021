@@ -22,7 +22,6 @@ if (!user) {
       };
   }
 }
-
     
 const store = createStore({
   state: {
@@ -36,7 +35,12 @@ const store = createStore({
       profilePhoto: '',
     },
     posts: [],
-
+    title: "",
+    content: "",
+    attachment: null,
+    comments: [],
+    users: [],
+    
   },
   mutations: {
     setStatus: function (state, status) {
@@ -49,6 +53,13 @@ const store = createStore({
     },
     userInfos: function (state, userInfos) {
       state.userInfos = userInfos;
+    },
+    getUsers: function (state, users) {
+      state.users = users;
+    },
+    deleteUser: function (state, user){
+      let users = state.users.filter(u => u.id != user.id)
+      state.users = users;
     },
     logout: function (state) {
       state.user = {
@@ -64,6 +75,15 @@ const store = createStore({
       let posts = state.posts.filter(p => p.id != post.id)
       state.posts = posts;
     },
+    getComments: function(state, comments){
+      state.comments = comments;
+    },
+    deleteComment: function (state, comment){
+      let comments = state.comments.filter(c => c.id != comment.id)
+      state.comments = comments;
+    },
+    
+
   },
   actions: {
     login: ({commit}, userInfos) => {
@@ -103,14 +123,32 @@ const store = createStore({
       })
       .catch(function () {
       });
-    }, 
+    },
+    getUsers: ({commit}) => {
+      instance.get('/users')
+      .then(function(response) {
+        commit('getUsers', response.data)
+        console.log(response.data)
+      }).catch(function(){
+
+      })
+    },
+    deleteUser: ({commit}, user) => {
+      instance.delete(`/users/${user.id}`)
+      .then(function(response){
+        if (response.status == 200 || response.status == 204)
+        commit('deleteUser', user.id)
+      })
+      .catch(function() {
+
+      })
+    },
     getPostsInfos: ({commit}) => {
       instance.get('/posts')
       .then(function(response) {
         commit('getPosts', response.data.posts)
         console.log(response.data)
       }).catch(function(){
-
       })
     },
     deletePost: ({commit}, post) => {
@@ -122,7 +160,26 @@ const store = createStore({
       .catch(function() {
 
       })
-    }
+    },
+    getComments: ({commit}) => {
+      instance.get('/comments')
+      .then(function(response) {
+        commit('getComments', response.data.comments)
+        console.log(response.data)
+      }).catch(function(){
+
+      })
+    },
+    deleteComment: ({commit}, comment) => {
+      instance.delete(`/comments/${comment.id}`)
+      .then(function(response){
+        if (response.status == 200 || response.status == 204)
+        commit('deleteComment', comment.id)
+      })
+      .catch(function() {
+
+      })
+    },
   }
 })
     

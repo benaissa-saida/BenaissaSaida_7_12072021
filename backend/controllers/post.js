@@ -1,6 +1,7 @@
 //Imports
 const models    = require('../models');
 const auth = require('../middleware/auth');
+const fs = require('fs');
 
 // Constants
 const TITLE_LIMIT   = 2;
@@ -15,7 +16,7 @@ exports.createPost = (req, res, next) => {
   
   const title = req.body.title; 
   const content = req.body.content; 
-  const attachment = req.body.attachment;
+  const attachment = req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "";
 
   if (title == null || content == null) {
     return res.status(400).json({ 'error': 'Paramètres manquants' });
@@ -34,9 +35,7 @@ exports.createPost = (req, res, next) => {
       let newPost = await models.Post.create({
         title : title,
         content : content,
-        attachment : req.file
-        ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-        : attachment,
+        attachment : attachment,
         likes : 0,
         UserId : user.id,
         userName: user.username,
@@ -52,21 +51,37 @@ exports.createPost = (req, res, next) => {
 }
 
 exports.findOnePost = async (req, res) => {
-  const postId      = req.params.postId
+  const headerAuth  = req.headers['authorization'];
+  const userId      = auth.getUserId(headerAuth);
    
-  if (postId < 0){
-      res.status(400).json({ 'error': 'paramètres invalides' });
+  if (userId< 0){
+      res.status(400).json({ 'error': 'Mauvais token' });
   }
   
-  models.Post.findOne({
-    where: { id: postId },
+  await models.Post.findOne({
+    attributes: ['id', 'title', 'userName', 'userId', 'content', 'attachment'],
+    where: { id: req.params.id },
   })
-  .then(function(post) {
-    if (post) {
-      res.status(200).json({ post: post });
-    } else {
-      res.status(404).json({ "error": "Aucun post trouvé" });
-    }
+  .then(async function(post) {
+    await models.User.findOne({
+      attributes: ['userName'],
+      where: { id: userId }
+    }).then(async function (user){
+      await models.Comment.findAll({
+        attributes: ['comment', 'userName','id', 'userId'],
+        where: { postId: req.params.id },
+      })
+      .then(function (comments) {
+        const getComment= { post, comments}
+        res.status(200).json(getComment)
+      }).catch(function(err) {
+        console.log(err);
+        res.status(500).json({ "error": err });
+      });
+    }).catch(function(err) {
+      console.log(err);
+      res.status(500).json({ "error": err });
+    });
   }).catch(function(err) {
     console.log(err);
     res.status(500).json({ "error": err });
@@ -90,24 +105,24 @@ exports.findAllPost = (req, res) => {
 exports.updateOnePost = async (req, res, next) => {
   // Getting auth header
   const headerAuth  = req.headers['authorization'];
-  const postId      = auth.getUserId(headerAuth);
+  const userId      = auth.getUserId(headerAuth);
   
-  if (postId < 0){
+  if (userId < 0){
     res.status(400).json({ 'error': 'mauvais token' });
   }
   
   // Params
-  const {title, content, attachment} = req.body
+  const {title, content} = req.body
  
   try{
-    const post = await models.Post.findOne({ where: { id: postId }})
-
+    const post = models.Post.findOne({ where: { id: req.params.id }})
+   
 
     post.title = title
     post.content = content
-    post.attachment = attachment
+    post.attachment = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : "";
 
-    await post.save()
+    await post.save({ fields: ['title', 'content', 'attachment']})
     return res.json({post})
   }catch (err) {
     return res.status(500).json({err})
@@ -115,7 +130,8 @@ exports.updateOnePost = async (req, res, next) => {
 }
 
 exports.deleteOnePost = async (req, res) => {
-  const postId      = req.params.postId
+
+  const postId      = req.params.p
   
   if (postId < 0){
     res.status(400).json({ 'error': 'Paramètres invalide' });
@@ -124,10 +140,11 @@ exports.deleteOnePost = async (req, res) => {
  
   try{
     const post = await models.Post.findOne({ where: { id: postId }})
-
-
-    await post.destroy()
-    return res.json({ message : 'Post supprimé'})
+    const filename = post.attachment.split('/images/')[1];
+    fs.unlink(`images/${filename}`, () => {
+      post.destroy()
+      return res.json({ message : 'Post supprimé'})
+    });
   }catch (err) {
     return res.status(500).json({err})
   }
