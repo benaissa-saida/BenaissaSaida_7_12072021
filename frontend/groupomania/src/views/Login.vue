@@ -9,7 +9,7 @@
         <input v-model="email" class="form-row__input" type="text" placeholder="Adresse mail"/>
       </div>
       <div class="form-row" v-if="mode == 'create'">
-        <input v-model="username" class="form-row__input" type="text" placeholder="Username"/>
+        <input v-model="username" class="form-row__input" type="text" placeholder="Pseudo"/>
       </div>
       <div class="form-row">
         <input v-model="password" class="form-row__input" type="password" placeholder="Mot de passe"/>
@@ -18,8 +18,9 @@
         Adresse mail et/ou mot de passe invalide
       </div>
       <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-        Adresse mail déjà utilisée
+        Adresse mail déjà utilisée 
       </div>
+      
       <div class="form-row">
         <button @click="login()" class="button" :class="{'button--disabled' : !validatedFields}" v-if="mode == 'login'">
           <span v-if="status == 'loading'">Connexion en cours...</span>
@@ -112,10 +113,6 @@ export default {
   justify-content: center;
   min-height: 100vh;
   padding:32px;
-}
-img {
-  max-width: 100%;
-  border-radius: 8px;
 }
 .card {
   max-width: 100%;

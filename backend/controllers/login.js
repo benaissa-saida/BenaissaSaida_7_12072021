@@ -25,7 +25,7 @@ exports.signup = function(req, res) {
   const bio = req.body.bio;
 
   if (email == null || username == null || password == null) {
-    return res.status(400).json({ 'error': 'paramètres manquants' });
+    return res.status(401).json({ 'error': 'paramètres manquants' });
   }
 
   if (username.length >= 13 || username.length <= 4){
@@ -33,11 +33,11 @@ exports.signup = function(req, res) {
   }
 
   if (!EMAIL_REGEX.test(email)){
-      return res.status(400).json({'error': 'email est pas valide'});
+      return res.status(403).json({'error': 'email est pas valide'});
   }
   
   if (!PASSWORD_REGEX.test(password)){
-    return res.status(400).json({'error': 'mot de passe invalide (doit comprendre une majuscule, une minuscule, un chiffre, et un caractère spécial. Il doit être compris entre 8-100 caractères.)'});
+    return res.status(403).json({'error': 'mot de passe invalide (doit comprendre une majuscule, une minuscule, un chiffre, et un caractère spécial. Il doit être compris entre 8-100 caractères.)'});
   }
   
   models.User.findOne({

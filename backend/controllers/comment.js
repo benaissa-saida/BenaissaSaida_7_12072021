@@ -51,11 +51,28 @@ exports.createComment = (req, res, next) => {
   });
 }
 
+exports.findAllComments = (req, res) => {
+
+  models.Comment.findAll({
+    attributes: ['PostId'],
+  })
+  .then(function(comments) {
+    if (comments) {
+      res.status(200).json({ comments : comments });
+    } else {
+      res.status(404).json({ "error": "no post found" });
+    }
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).json({ "error": err });
+  });
+}
+
 exports.deleteOneComment = async (req, res) => {
   const headerAuth  = req.headers['authorization'];
   const userId      = auth.getUserId(headerAuth)
 
-    
+  const commentId = req.params.commentId
   if (userId <= 0){
     res.status(400).json({ 'error': 'Mauvais token' });
   }

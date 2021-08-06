@@ -21,7 +21,7 @@
               <p class="text-lg font-semibold text-left hidden lg:block">Profile</p>
             </button>
           </router-link>
-          <router-link :to="`/friend`">
+          <router-link :to="`/friends`">
             <button class="focus:outline-none hover:text-red-50 flex items-center py-2 px-4 hover:bg-red-600 rounded-full mr-auto mb-3">
               <i class="fas fa-users text-2xl mr-4 text-left"></i>
               <p class="text-lg font-semibold text-left hidden lg:block">Amis</p>
@@ -33,17 +33,11 @@
             <p class="text-lg font-semibold text-left hidden lg:block"> {{ tab.title }} </p>
           </button>
         </div>
-        <a title="poste" href="#">
-          <button class="text-red-50 bg-red-600 rounded-full font-semibold focus:outline-none w-12 h-12 lg:h-auto lg:w-full p-3 hover:bg-darkblue">
-            <p class="hidden lg:block">Poste</p>
-            <i class="fas fa-plus lg:hidden"></i>
-          </button>
-        </a>
       </div>
       <div class="lg:w-full  relative">
           <button @click="dropdown = true" class="flex hover:text-red-50 items-center w-full hover:bg-red-600 rounded-full p-2 focus:outline-none">
-            <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
-            <img v-else src="{{ user.profilePhoto }}" class="h-12 w-12 rounded-full flex-none"/>
+            <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+            <img v-else :src="user.profilePhoto" class="h-10 w-10 rounded-full flex-none"/>
             <div class="hidden lg:block ml-4">
               <p class="text-sm font-bold leading-tight"> {{ user.username }} </p>
             </div>
@@ -52,8 +46,8 @@
           <div v-if="dropdown === true" class="absolute text-red-50 bottom-0 left-0 w-64 rounded-lg shadow-md border-red-500 bg-red-500 mb-16">
             <router-link :to="`/profile`">
               <button @click="dropdown = false" class="p-3 flex items-center w-full hover:bg-red-400 p-2 focus:outline-none">
-                <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
-                <img v-else src="{{ user.profilePhoto }}" class="h-10 w-10 rounded-full flex-none"/>
+                <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+                <img v-else :src="user.profilePhoto" class="h-10 w-10 rounded-full flex-none"/>
                 <div class="ml-4">
                   <p class="text-sm font-bold leading-tight"> {{ user.username }} </p>
                 </div>
@@ -88,7 +82,8 @@ export default {
   computed: {
     ...mapState({
       user: 'userInfos',
-    })
+    }),
+    
   },
   methods: {
     logout: function () {
@@ -101,11 +96,6 @@ export default {
 </script>
 
 <style scoped>
-/* #nav{
-  display: flex;
-  height: 100vh;
-  width: 100%;
-} */
 svg{
   width: 11.5rem;
 }

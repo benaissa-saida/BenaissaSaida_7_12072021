@@ -14,4 +14,6 @@ router.put('/userId', multer , userCtrl.updateUserProfile);
 
 router.delete('/:userId', userCtrl.deleteOneUser)
 
+router.get('/:id', userCtrl.findFriendProfile);
+
 module.exports = router;

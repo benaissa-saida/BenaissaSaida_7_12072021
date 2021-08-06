@@ -6,8 +6,8 @@
         </div>
         <div class="px-5 py-3 border-b-8 border-lighter flex">
             <div class="flex-none">
-                <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
-                <img v-else :src="user.profilePhoto" class="h-12 w-12 rounded-full flex-none"/>
+                <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+                <img v-else :src="user.profilePhoto" class="h-10 w-10 rounded-full flex-none"/>
             </div>
             <form @submit.prevent="submit" class="w-full px-4 relative">
                 <div >
@@ -21,7 +21,7 @@
                     <button @click="$refs.image.click()"><i class="text-lg text-red-300 mr-4 far fa-image"></i></button>
                     <input style="display: none" type="file" ref="image" @change="onFileSelected()">
                 </div>
-                <div v-if="submitStatus == 'error_create'">
+                <div v-if="submitStatus == 'error_create'" class="text-red-600">
                     Il manque l'un des paramètres, veuillez tout remplir !
                 </div>
                 <button :class="{'button--disabled' : !validatedFields}" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
@@ -32,31 +32,40 @@
         </div>
         <div  class="flex flex-col">
             <div v-for="(post, id) in posts.slice().reverse()" class="flex flex-col-reverse" :key="id">
-                <router-link :to="`/poste/${post.id}`">
+                
                 <div  class="w-full p-4 border-b hover:bg-lighter flex flex-col">
-                    <div class="flex-none mr-4">
-                        <img v-if="users.map((user) => { if (user.id === post.UserId) return user.profilePhoto;}).join('') !== (null || '')" :src="users.map((user) => { if (user.id === post.UserId) return user.profilePhoto;}).join('')" class="h-12 w-12 rounded-full flex-none"/>
-                        <img v-else src="../assets/icon/icon.png" class="h-12 w-12 rounded-full flex-none"/>
+                    <div class="flex mr-4" >
+                        <img v-if="users.map((user) => {
+                            if (user.id === post.UserId) 
+                            return user.profilePhoto;}).join('') !== (null || '')" 
+                            :src="users.map((user) => {
+                            if (user.id === post.UserId) 
+                            return user.profilePhoto;}).join('')" 
+                        class="h-12 w-12 rounded-full flex-none"/>
+                        <img  v-else src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+                        <p class="mt-3 ml-3 font-semibold"> {{ post.userName }} </p>
+                        <button v-if="user.id == post.UserId || user.id == 1" @click="deletePost(post)" class="ml-auto mt-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
                     </div>
                     <div  class="w-full" >
-                        <div class="flex items-center w-full">
-                            <h2 class="font-semibold"> {{ post.userName }} </h2>
-                            <p class="text-sm text-dark ml-2"> </p>
-                            <button v-if="user.id == post.UserId || user.id == 1" @click="deletePost(post)" class="ml-auto w-8 h-8 rounded-full hover:bg-red-600">
-                                <i class="fas fa-trash-alt text-dark"></i>
-                            </button>
-
-                        </div>
-                        <h3 class="py-2">{{ post.title }}</h3>
+                        
+                        <h2 class="text-base text-center py-2">{{ post.title }}</h2>
                         <div>
                             <img v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg')" :src="post.attachment" alt="image-video">
                         </div>
-                        <p class="py-2">{{ post.content }}</p>
+                        <p class="text-sm py-2">{{ post.content }}</p>
+                    </div>
+                    <div class="flex items-center text-sm text-dark">
+                        <router-link :to="`/poste/${post.id}`"><i class="far fa-comment mr-3"></i></router-link>
+                        <div>{{ comments.filter((comment) => {
+                            return comment.PostId == post.id;}).length}}
+                        </div>
                     </div>
                 </div>
-                </router-link>
             </div>
-            
         </div>
     </div>
 </template>
@@ -72,7 +81,6 @@ import axios from "axios";
                 content: "",
                 attachment: null,
                 submitStatus: null,
-                commentaire: "",
             }
         },
         computed: {
@@ -88,21 +96,14 @@ import axios from "axios";
                     return this.$store.state.comments
                 }
             }),
-            // filteredComment() {
-            //     return comments.filter((comment) => {
-            //         return comment.postId = this.post.id
-            //     })
-            // },
             validatedFields: function () {
                 
-                if (this.title != "" && this.content != "" && this.attachment) {
+                if (this.title != "" && this.content != "" ) {
                     return true;
                 } else {
                     return false;
                 }
-                
             },
-            
         },
         methods: {
             onFileSelected: function() {
@@ -121,13 +122,12 @@ import axios from "axios";
                     fd.append('title', this.title)
                     fd.append('content', this.content)
                     fd.append("user", this.user);
-                    this.submitStatus = "loading";
                 } else {
                     fd.append('title', this.title)
                     fd.append('content', this.content)
                     fd.append("user", this.user)
-                    this.submitStatus = "loading";
                 }
+                this.submitStatus = "loading"
                 axios.post("http://localhost:3000/api/posts/new", fd)
                 .then(response => {
                     this.title = response.data
@@ -148,32 +148,6 @@ import axios from "axios";
                    return;
                 }
             },
-            submitCom(post) {
-                let user = localStorage.getItem('user');
-                user = JSON.parse(user);
-                axios.defaults.headers.common['Authorization'] = user.token;
-
-                axios.post('http://localhost:3000/api/comments/comment', {
-                    comment: this.commentaire,
-                    postId: post.id,
-                    userId: user.id
-                })
-                .then(response => {
-                    console.log(response.data)
-                    this.$router.push("/");
-                })
-                .catch((error) => (
-                    (this.submitStatus = "error_create"), console.log(error)
-                ));
-            },
-            deleteComment: function (comment) {
-                let response = confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ? ')
-                if (response) {
-                   this.$store.dispatch('deleteComment', comment)
-                   this.$router.go('/');
-                   return;
-                }
-            }
         }
     }
 </script>

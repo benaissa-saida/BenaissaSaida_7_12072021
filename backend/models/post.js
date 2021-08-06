@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Comment);
  
       models.Post.belongsTo(models.User,{
+        onDelete: 'cascade',
         foreignKey :{
           allowNull : false
         }

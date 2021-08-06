@@ -3,7 +3,7 @@
     <Nav />
     <Postes />
     <Amis />
-    <router-view></router-view>
+   
   </div>
 </template>
 
@@ -21,6 +21,7 @@ export default {
     this.$store.dispatch('getUsers');
     this.$store.dispatch('getUserInfos');
     this.$store.dispatch('getPostsInfos');
+    this.$store.dispatch('getComments');
   },
   name: "Home",
   components: {

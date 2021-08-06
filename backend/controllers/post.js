@@ -102,39 +102,15 @@ exports.findAllPost = (req, res) => {
   });
 }
 
-exports.updateOnePost = async (req, res, next) => {
-  // Getting auth header
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
-  
-  if (userId < 0){
-    res.status(400).json({ 'error': 'mauvais token' });
-  }
-  
-  // Params
-  const {title, content} = req.body
- 
-  try{
-    const post = models.Post.findOne({ where: { id: req.params.id }})
-   
-
-    post.title = title
-    post.content = content
-    post.attachment = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : "";
-
-    await post.save({ fields: ['title', 'content', 'attachment']})
-    return res.json({post})
-  }catch (err) {
-    return res.status(500).json({err})
-  }
-}
 
 exports.deleteOnePost = async (req, res) => {
+  const headerAuth  = req.headers['authorization'];
+  const userId      = auth.getUserId(headerAuth);
 
-  const postId      = req.params.p
+  const postId      = req.params.postId
   
-  if (postId < 0){
-    res.status(400).json({ 'error': 'Paramètres invalide' });
+  if (userId < 0){
+    res.status(400).json({ 'error': 'Mauvais token' });
   }
   
  

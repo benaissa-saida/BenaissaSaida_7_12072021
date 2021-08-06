@@ -35,9 +35,6 @@ const store = createStore({
       profilePhoto: '',
     },
     posts: [],
-    title: "",
-    content: "",
-    attachment: null,
     comments: [],
     users: [],
     
@@ -61,6 +58,14 @@ const store = createStore({
       let users = state.users.filter(u => u.id != user.id)
       state.users = users;
     },
+    deleteProfileUser: function (state){
+      state.user = {
+        userId: -1,
+        token: '',
+      }
+      localStorage.clear();
+      
+    },
     logout: function (state) {
       state.user = {
         userId: -1,
@@ -71,12 +76,12 @@ const store = createStore({
     getPosts: function (state, posts) {
       state.posts = posts;
     },
+    getComs: function(state, comments) {
+      state.comments = comments
+    },
     deletePost: function (state, post){
       let posts = state.posts.filter(p => p.id != post.id)
       state.posts = posts;
-    },
-    getComments: function(state, comments){
-      state.comments = comments;
     },
     deleteComment: function (state, comment){
       let comments = state.comments.filter(c => c.id != comment.id)
@@ -133,11 +138,31 @@ const store = createStore({
 
       })
     },
+    // getFriendProfile: ({commit}, user) => {
+    //   instance.get(`/users/${user.id}`)
+    //   .then(function(response){
+    //     commit('getFriendProfile', user.id)
+    //     console.log(response.data)
+    //   })
+    //   .catch(function() {
+
+    //   })
+    // },
     deleteUser: ({commit}, user) => {
       instance.delete(`/users/${user.id}`)
       .then(function(response){
         if (response.status == 200 || response.status == 204)
         commit('deleteUser', user.id)
+      })
+      .catch(function() {
+
+      })
+    },
+    deleteProfileUser: ({commit}, user) => {
+      instance.delete(`/users/${user.id}`)
+      .then(function(response){
+        if (response.status == 200 || response.status == 204)
+        commit('deleteProfileUser', user.id)
       })
       .catch(function() {
 
@@ -164,7 +189,7 @@ const store = createStore({
     getComments: ({commit}) => {
       instance.get('/comments')
       .then(function(response) {
-        commit('getComments', response.data.comments)
+        commit('getComs', response.data.comments)
         console.log(response.data)
       }).catch(function(){
 

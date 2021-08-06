@@ -3,6 +3,9 @@ import Login from '@/views/Login.vue';
 import Home from '@/views/Home.vue';
 import Poste from '@/components/Poste.vue';
 import Profile from '@/views/Profile.vue';
+import Friends from '@/views/Friends.vue';
+import FriendProfile from '@/components/FriendProfile.vue';
+import UserProfileDelete from '@/components/UserProfileDelete.vue';
 
 
 
@@ -40,6 +43,29 @@ const routes = [
         meta: {
             requiresAuth: true,
         },
+    },
+    {
+        name: 'friends',
+        path: '/friends',
+        component: Friends,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    { 
+        name: 'friendProfile',
+        path: '/friend/:id', 
+        component: FriendProfile, 
+        props:true,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    { 
+        name: 'UserProfileDelete',
+        path: '/UserProfileDelete', 
+        component: UserProfileDelete, 
+        props:true,
     },
     
 ];

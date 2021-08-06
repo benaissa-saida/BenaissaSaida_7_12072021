@@ -1,7 +1,7 @@
 //Imports
 const models    = require('../models');
-const auth = require('../middleware/auth');
-
+const auth      = require('../middleware/auth');
+const fs        = require('fs');
 
 exports.findOneProfile = (req, res) => {
     // Getting auth header
@@ -24,8 +24,31 @@ exports.findOneProfile = (req, res) => {
     }
     })
     .catch(function(err) {
-        res.status(500).json({ 'error': 'Utilisateur impossible à créer !' });
+        res.status(500).json({ 'error': 'Utilisateur impossible à trouver dans la BDD !' });
     });
+}
+
+exports.findFriendProfile = (req, res) => {
+  const userId = req.params.id
+   
+  if (userId < 0){
+      res.status(400).json({ 'error': 'paramètres invalides' });
+  }
+
+  models.User.findOne({
+    attributes: ['id', 'firstname', 'lastname', 'username', 'bio', 'profilePhoto'],
+      where: { id: userId}
+  })
+  .then(user => {
+  if (user) {
+      res.status(201).json(user);
+  } else {
+      res.status(404).json({ 'error': 'Utilisateur introuvable !'});
+  }
+  })
+  .catch(function(err) {
+      res.status(500).json({ 'error': 'Utilisateur impossible à trouver dans la BDD !' });
+  });
 }
 
 exports.findAllProfile = (req, res) =>{
@@ -49,8 +72,8 @@ exports.updateUserProfile = function(req, res) {
   // Params
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
+  const username = req.body.username;
   const bio = req.body.bio;
-  const profilePhoto = req.body.profilePhoto;
   
   
   models.User.findOne({
@@ -61,8 +84,9 @@ exports.updateUserProfile = function(req, res) {
       userFound.update({
         firstname: (firstname ? firstname : userFound.firstname),
         lastname: (lastname ? lastname : userFound.lastname),
+        username: (username ? username : userFound.username),
         bio: (bio ? bio : userFound.bio),
-        profilePhoto: (profilePhoto ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : userFound.profilePhoto),
+        profilePhoto: (req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : userFound.profilePhoto),
       }).then(function() {
         res.status(200).json({ message: 'Utilisateur mis à jour !'})
       }).catch( error => {
@@ -78,20 +102,26 @@ exports.updateUserProfile = function(req, res) {
 }
 
 exports.deleteOneUser = async (req, res) => {
-  const userId      = req.params.userId
-  
-  if (userId < 0){
-    res.status(400).json({ 'error': 'Paramètres invalide' });
-  }
-  
+   const userId      = req.params.userId
  
-  try{
+   if (userId < 0){
+     res.status(400).json({ 'error': 'paramètre invalide' });
+   }
+ 
+ 
+   try{
     const user = await models.User.findOne({ where: { id: userId }})
 
+    const filename = user.profilePhoto.split('/images/')[1];
+    fs.unlink(`images/${filename}`, () => {
+      user.destroy()
+      return res.json({ message : 'Utilisateur supprimé'})
+    })
+    
 
-    await user.destroy()
-    return res.json({ message : 'Utilisateur supprimé !'})
   }catch (err) {
+    
     return res.status(500).json({err})
+    
   }
 }
