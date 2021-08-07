@@ -15,7 +15,7 @@ const routes = [
         path: '/', 
         component: Login,
         meta: {
-            requiresVisitor: true,
+           title: 'Connexion'
         },
     },
     {
@@ -23,7 +23,7 @@ const routes = [
         path: '/home',
         component: Home,
         meta: {
-            requiresAuth: true,
+            title: 'Accueil'
         },
     },
     { 
@@ -32,7 +32,7 @@ const routes = [
         component: Poste, 
         props:true,
         meta: {
-            requiresAuth: true,
+            title: 'Poste'
         },
     },
     { 
@@ -41,7 +41,7 @@ const routes = [
         component: Profile, 
         props:true,
         meta: {
-            requiresAuth: true,
+            title: 'Profile'
         },
     },
     {
@@ -49,7 +49,7 @@ const routes = [
         path: '/friends',
         component: Friends,
         meta: {
-            requiresAuth: true,
+            title: 'Amis'
         },
     },
     { 
@@ -58,7 +58,7 @@ const routes = [
         component: FriendProfile, 
         props:true,
         meta: {
-            requiresAuth: true,
+            title: 'Profile amis'
         },
     },
     { 
@@ -75,6 +75,10 @@ const router = createRouter({
     routes,
 })
 
+router.afterEach((to, from) => {
+    console.log(from, to);
+    document.title = to.meta.title;
+})
   
   
 export default router;

@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full md:w-1/2 h-full overflow-y-scroll">
+    <div class="w-full flex-1 md:w-1/2 h-screen md:overflow-y-scroll">
         <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
             <h1 class="text-xl font-bold">Accueil</h1>
             <i class="far fa-star text-xl text-red-300"></i>
@@ -9,7 +9,7 @@
                 <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
                 <img v-else :src="user.profilePhoto" class="h-10 w-10 rounded-full flex-none"/>
             </div>
-            <form @submit.prevent="submit" class="w-full px-4 relative">
+            <form @submit.prevent="submit" class="w-full px-4">
                 <div >
                     <input v-model="title" id="title" type="text" placeholder="Titre" class="mt-3 pb-3 w-full focus:outline-none"/> 
                 </div>
@@ -24,10 +24,13 @@
                 <div v-if="submitStatus == 'error_create'" class="text-red-600">
                     Il manque l'un des paramètres, veuillez tout remplir !
                 </div>
-                <button :class="{'button--disabled' : !validatedFields}" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
-                    <span v-if="submitStatus == 'loading'">Envoie...</span>  
-                    <span v-else >Publier</span>      
-                </button>  
+                <div class="relative">
+                    <button :class="{'button--disabled' : !validatedFields}" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
+                        <span v-if="submitStatus == 'loading'">Envoie...</span>  
+                        <span v-else >Publier</span>      
+                    </button> 
+                </div>
+                 
             </form>
         </div>
         <div  class="flex flex-col">
@@ -53,7 +56,7 @@
                     <div  class="w-full" >
                         
                         <h2 class="text-base text-center py-2">{{ post.title }}</h2>
-                        <div>
+                        <div class="flex align-center justify-center">
                             <img v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg')" :src="post.attachment" alt="image-video">
                         </div>
                         <p class="text-sm py-2">{{ post.content }}</p>
@@ -108,7 +111,6 @@ import axios from "axios";
         methods: {
             onFileSelected: function() {
                 this.attachment = this.$refs.image.files[0]
-                console.log(this.attachment)
             },
             submit(){
                 let user = localStorage.getItem('user');

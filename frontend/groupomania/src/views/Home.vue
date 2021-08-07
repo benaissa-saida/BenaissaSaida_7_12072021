@@ -1,5 +1,5 @@
 <template>
-  <div id='home' class="flex  h-screen w-full">
+  <div id='home' class="md:flex relative min-h-screen h-screen">
     <Nav />
     <Postes />
     <Amis />

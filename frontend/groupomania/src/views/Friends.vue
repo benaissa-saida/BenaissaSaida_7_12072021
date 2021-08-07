@@ -1,7 +1,7 @@
 <template >
-    <div class="flex  h-screen w-full">
+    <div class="md:flex relative min-h-screen h-screen">
         <Nav />
-        <div class="w-full h-full overflow-y-scroll">
+        <div class="w-full h-full md:overflow-y-scroll">
             <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
                 <h1 class="text-xl font-bold">Amis</h1>
                 <i class="far fa-star text-xl text-red-300"></i>
@@ -11,8 +11,8 @@
                     <div v-for="(user, id) in users" :key="id" class="flex flex-col">
                         <router-link :to="`/friend/${user.id}`">
                         <button class="w-full flex hover:bg-lighter m-4 p-3 border-lighter">
-                            <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-16 w-16 rounded-full flex-none"/>
-                            <img v-else :src="user.profilePhoto" class="h-12 w-12 rounded-full flex-none"/>
+                            <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" alt="image-profil" class="h-16 w-16 rounded-full flex-none"/>
+                            <img v-else :src="user.profilePhoto" alt="image-profil" class="h-12 w-12 rounded-full flex-none"/>
                             <div class="lg:block ml-4 mt-3">
                                 <p class="text-sm font-bold leading-tight"> {{ user.lastname}} {{user.firstname}} </p>
                                 <p v-if="user.lastname === null" class="text-sm font-bold leading-tight"> {{ user.username }} </p>

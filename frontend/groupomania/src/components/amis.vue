@@ -1,5 +1,5 @@
 <template>
-    <div class="md:block hidden w-1/3 h-full border-l border-red-50 py-2 px-4 overflow-y-scroll relative">
+    <div class="lg:block hidden w-1/3 h-full border-l border-lighter py-2 px-4 overflow-y-scroll relative">
         <input v-model="search" class="pl-12 rounded-full w-full p-2 bg-red-50 text-sm mb-4 focus:outline-none" placeholder="Search" />
         <i class="fas fa-search absolute left-0 top-0 mt-5 ml-12 text-sm text-light"></i>
         <div class="w-full rounded-lg bg-red-50">
@@ -9,8 +9,8 @@
             <div v-for="(user, id) in filteredUser" :key="id">
                 <router-link :to="`/friend/${user.id}`">
                     <button class="w-full flex hover:bg-red-100 p-3 ">
-                        <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
-                        <img v-else :src="user.profilePhoto" class="h-10 w-10 rounded-full flex-none"/>
+                        <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" alt="image-profil" class="h-10 w-10 rounded-full flex-none"/>
+                        <img v-else :src="user.profilePhoto" alt="image-profil" class="h-10 w-10 rounded-full flex-none"/>
                         <div class="lg:block ml-4 mt-3">
                             <p class="text-sm font-bold leading-tight"> {{ user.lastname}} {{user.firstname}} </p>
                             <p v-if="user.lastname === null" class="text-sm font-bold leading-tight"> {{ user.username }} </p>

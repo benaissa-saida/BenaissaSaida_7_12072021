@@ -1,16 +1,16 @@
 <template>
-    <div class="flex  h-screen w-full">
+    <div class="md:flex relative min-h-screen h-screen">
         <Nav />
-        <div class="w-full h-full overflow-y-scroll">
+        <div class="lg:w-1/2 w-full h-full md:overflow-y-scroll">
             <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
                 <h1 class="text-xl font-bold">Profile</h1>
                 <i class="far fa-star text-xl text-red-300"></i>
             </div>
-            <div class="container">
-                <div class="lg:block  ml-4 mt-3">
+            <div class="container lg:mx-auto">
+                <div class="lg:block ml-4 mt-3">
                     <div class="flex flex-col items-center justify-center">
-                    <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-40 w-40 rounded-full flex-none"/>
-                    <img v-else :src="user.profilePhoto" class="h-40 w-40 rounded-full flex-none"/>
+                    <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" alt="image-profil" class="h-40 w-40 rounded-full flex-none"/>
+                    <img v-else :src="user.profilePhoto" alt="image-profil" class="h-40 w-40 rounded-full flex-none"/>
                     <h2 class="text-lg font-bold leading-tight"> {{ user.lastname}} {{user.firstname}} </h2>
                     <p class="text-sm font-bold leading-tight"> @{{ user.username }} </p>
                     </div>
@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="mt-6 py-4 text-center bg-gray-50 border-lighter">
-                    Publications
+                    <h3>Publications</h3>
                 </div>
 
                 <div v-if="posts.some((post) => user.id == post.UserId)" class="flex flex-col align-center jystify-center">
@@ -32,8 +32,8 @@
                                     :src="users.map((user) => {
                                     if (user.id === post.UserId) 
                                     return user.profilePhoto;}).join('')" 
-                                class="h-12 w-12 rounded-full flex-none"/>
-                                <img  v-else src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+                                alt="image-profil" class="h-12 w-12 rounded-full flex-none"/>
+                                <img  v-else src="../assets/icon/icon.png" alt="image-profil" class="h-10 w-10 rounded-full flex-none"/>
                                 <p class="mt-3 ml-3 font-semibold"> {{ post.userName }} </p>
                                 <button v-if="userinf.id == post.UserId || userinf.id == 1" @click="deletePost(post)" class="ml-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@
                                 
                                 <h2 class="text-base text-center py-2">{{ post.title }}</h2>
                                 <div class="align-center justify-center flex flex-col">
-                                    <img v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg')" :src="post.attachment" alt="image-video" class="px-4">
+                                    <img v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg' || 'gif')" :src="post.attachment" alt="image-post" class="px-4 max-w-xl">
                                     <p class="text-sm py-2">{{ post.content }}</p>
                                 </div>
                                 
@@ -59,16 +59,18 @@
                         </div>
                     </div>
                 </div>
-                <div v-else class="my-5">
+                <div v-else class="my-5 px-5">
                     <h1>Il n'y a pas de publications pour le moment... </h1>
                 </div>
             </div>
         </div>
+        <Amis />
     </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue';
+import Amis from '@/components/Amis.vue';
 
 import { mapState } from 'vuex'
 import axios from 'axios'
@@ -76,6 +78,8 @@ export default {
     name: 'FriendProfile',
     components: {
         Nav,
+        Amis
+
     },
     data() {
         return{
@@ -84,15 +88,13 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$store.state.user);
         if (this.$store.state.user.userId == -1) {
             this.$router.push('/');
             return ;
         }
         axios.get(`http://localhost:3000/api/users/${this.id}`)
         .then(response => {
-            this.user = response.data
-            console.log(response.data)    
+            this.user = response.data   
                
         })
         this.$store.dispatch('getUsers');

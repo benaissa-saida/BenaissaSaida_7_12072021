@@ -1,11 +1,11 @@
 <template>
-    <div class="flex  h-screen w-full">
+    <div class="md:flex relative min-h-screen h-screen">
         <Nav />
-        <div class="w-full md:w-1/2 h-full overflow-y-scroll">
+        <div class="lg:w-1/2 w-full h-full md:overflow-y-scroll">
             <div  class="flex flex-col">
-                <div class="flex flex-col-reverse">
-                    <div  class="w-full p-4 border-b hover:bg-lighter flex flex-col">
-                        <div>
+ 
+                    <div  class="w-full p-4 hover:bg-lighter flex flex-col">
+                        <div class="md:container">
                         <div class="flex mr-4">
                             <img v-if="users.map((user) => {
                                 if (user.id === post.userId) 
@@ -13,8 +13,8 @@
                                 :src="users.map((user) => {
                                 if (user.id === post.userId) 
                                 return user.profilePhoto;}).join('')" 
-                            class="h-12 w-12 rounded-full flex-none"/>
-                            <img  v-else src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
+                            alt="image-profil" class="h-12 w-12 rounded-full flex-none"/>
+                            <img  v-else src="../assets/icon/icon.png" alt="image-profil" class="h-10 w-10 rounded-full flex-none"/>
                             <p class="mt-3 ml-3 font-semibold"> {{ post.userName }} </p>
                             
                             <button v-if="user.id == post.userId || user.id == 1" @click="deletePost(post)" class="ml-auto w-8 h-8 ">
@@ -25,8 +25,8 @@
                         </div>
                         <div  class="w-full" >
                             <h2 class="text-base text-center py-2">{{ post.title }}</h2>
-                            <div >
-                                <img v-if="post.attachment !== null && post.attachment !== '' " :src="post.attachment" alt="image-video">
+                            <div class="flex align-center justify-center ">
+                                <img v-if="post.attachment !== null && post.attachment !== '' " :src="post.attachment" alt="image-post">
                             </div>
                             <p class="text-sm py-2">{{ post.content }}</p>
                         </div>
@@ -36,14 +36,19 @@
                         <div v-for="(comment, id) in comments" class="flex w-full flex-col justify-center  bg-red-50 mt-4 py-2" :key="id">
                             <div class="flex">
                                 <div>
-                                    <img v-if="user.id === post.userId && user.profilePhoto != null" :src="user.profilePhoto" class="ml-2 h-10 w-10 rounded-full flex-none"/>
-                                    <img v-else src="../assets/icon/icon.png" class="h-10 w-10 ml-2 rounded-full flex-none"/>
+                                    <img v-if="users.map((user) => {
+                                        if (user.id === comment.userId) 
+                                        return user.profilePhoto;}).join('') !== (null || '')" 
+                                        :src="users.map((user) => {
+                                        if (user.id === comment.userId) 
+                                        return user.profilePhoto;}).join('')" alt="image-profil" class="ml-2 h-10 w-10 rounded-full flex-none"/>
+                                    <img v-else src="../assets/icon/icon.png" alt="image-profil" class="h-10 w-10 ml-2 rounded-full flex-none"/>
                                 </div>
-                                <div class="flex flex-col align-start pl-3">
+                                <div class="flex flex-col ml-3">
                                     <p class="mb-2">{{ comment.userName }}</p>
                                     <p class="text-sm">{{ comment.comment }}</p>
                                 </div>
-                                <button v-if="user.id == comment.userId || user.id == 1" @click="deleteComment(comment)" class="ml-auto w-8 h-8 ">
+                                <button v-if="user.id == comment.userId || user.id == 1" @click="deleteComment(comment)" class="ml-auto flex-end w-8 h-8 ">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -52,11 +57,11 @@
                             </div>
                         </div>
                         <form @submit.prevent="submitCom()" class="mt-2">
-                             <div class="flex">
-                                <img v-if="user.profilePhoto !== null || ''" :src="user.profilePhoto" class="ml-2 h-10 w-10 rounded-full flex-none"/>
-                                <img v-else src="../assets/icon/icon.png" class="ml-2 h-10 w-10 rounded-full flex-none"/>
+                             <div class="flex ">
+                                <img v-if="user.profilePhoto !== null || ''" :src="user.profilePhoto" alt="image-profil" class="md:ml-2 h-10 w-10 rounded-full flex-none"/>
+                                <img v-else src="../assets/icon/icon.png" alt="image-profil" class="md:ml-2 h-10 w-10 rounded-full flex-none"/>
                                 <input type="text" v-model="comment" placeholder="Commentaire..." class="focus:outline-none w-full ml-2">
-                                <button :class="{'button--disabled' : !validatedFields}" class=" h-9 px-3 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full ">
+                                <button :class="{'button--disabled' : !validatedFields}" class="sm:px-3 h-9 px-2 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full ">
                                     <span v-if="submitStatus == 'loading'">Envoie...</span>  
                                     <span v-else >Publier</span>      
                                 </button>
@@ -66,7 +71,6 @@
                             </div>
                         </form>
                     </div>
-                </div>
             </div>
         </div>
         <Amis />
@@ -101,13 +105,11 @@ export default ({
         user = JSON.parse(user);
         axios.defaults.headers.common['Authorization'] = user.token;
 
-        axios.get(`http://localhost:3000/api/posts/userPost/${this.id}`)
+        axios.get(`http://localhost:3000/api/posts/${this.id}`)
         .then(response => {
             this.post = response.data.post
-            console.log(response.data.post)
-           if (response.data.post){
+           if (this.post){
                this.comments = response.data.comments
-               return console.log(response.data.comments)
            }            
         })
 
@@ -135,7 +137,7 @@ export default ({
             let response = confirm('Êtes-vous sûr de vouloir supprimer ce post ? ')
             if (response) {
                 this.$store.dispatch('deletePost', post)
-                this.$router.go('/');
+                this.$router.go('/home');
                 return;
             }
         },
@@ -149,7 +151,7 @@ export default ({
                 comment: this.comment
             }).then(response => {
                 this.comment = response.data.comment
-                this.$router.go("/home");
+                this.$router.go('/home');
             }).catch((error) => (
                 (this.submitStatus = "error_create"), console.log(error)
             ));

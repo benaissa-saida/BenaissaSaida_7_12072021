@@ -1,7 +1,7 @@
 <template>
-  <div class="flex  h-screen w-full">
+  <div class="md:flex relative min-h-screen h-screen">
     <Nav />
-    <div class="w-full h-full overflow-y-scroll">
+    <div class="lg:w-1/2 w-full h-full">
       <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
         <h1 class="text-xl font-bold">Profile</h1>
         <i class="far fa-star text-xl text-red-300"></i>
@@ -9,8 +9,8 @@
       <div class="container">
           <div class="lg:block ml-4 mt-3">
             <div class="flex flex-col items-center justify-center">
-              <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" class="h-20 w-20 rounded-full flex-none"/>
-              <img v-else :src="user.profilePhoto" class="h-40 w-40 rounded-full flex-none"/>
+              <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" alt="image-profil" class="h-20 w-20 rounded-full flex-none"/>
+              <img v-else :src="user.profilePhoto" alt="image-profil" class="h-40 w-40 rounded-full flex-none"/>
               <h2 class="text-lg font-bold leading-tight"> {{ user.lastname}} {{user.firstname}} </h2>
               <p class="text-sm font-bold leading-tight"> @{{ user.username }} </p>
             </div>
@@ -87,12 +87,13 @@
           </div>
         </div>
       </div>
+    <Amis />
   </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue';
-
+import Amis from '@/components/Amis.vue';
 
 import { mapState } from 'vuex'
 import axios from "axios";
@@ -100,6 +101,7 @@ export default {
   name: 'Profile',
   components: {
     Nav,
+    Amis
 
   },
   mounted: function () {

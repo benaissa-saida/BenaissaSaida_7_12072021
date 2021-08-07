@@ -133,21 +133,10 @@ const store = createStore({
       instance.get('/users')
       .then(function(response) {
         commit('getUsers', response.data)
-        console.log(response.data)
       }).catch(function(){
 
       })
     },
-    // getFriendProfile: ({commit}, user) => {
-    //   instance.get(`/users/${user.id}`)
-    //   .then(function(response){
-    //     commit('getFriendProfile', user.id)
-    //     console.log(response.data)
-    //   })
-    //   .catch(function() {
-
-    //   })
-    // },
     deleteUser: ({commit}, user) => {
       instance.delete(`/users/${user.id}`)
       .then(function(response){
@@ -172,7 +161,6 @@ const store = createStore({
       instance.get('/posts')
       .then(function(response) {
         commit('getPosts', response.data.posts)
-        console.log(response.data)
       }).catch(function(){
       })
     },
@@ -190,7 +178,6 @@ const store = createStore({
       instance.get('/comments')
       .then(function(response) {
         commit('getComs', response.data.comments)
-        console.log(response.data)
       }).catch(function(){
 
       })

@@ -1,6 +1,6 @@
 <template>
  
-  <router-view> </router-view>
+  <router-view :key="$route.fullPath"></router-view>
 
 </template>
 
@@ -19,6 +19,9 @@ export default {
   margin:0;
   padding: 0;
   box-sizing: border-box;
+}
+img{
+  object-fit: cover;
 }
 
 </style>
