@@ -9,9 +9,9 @@ const COMMENT_LIMIT   = 2;
 
 //routes 
 
-exports.createComment = (req, res, next) => {
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth)
+exports.createComment = async (req, res, next) => {
+  const headerAuth  = await req.headers['authorization'];
+  const userId      = await auth.getUserId(headerAuth)
 
   const postId = req.params.id;
 
@@ -29,7 +29,7 @@ exports.createComment = (req, res, next) => {
     return res.status(400).json({ 'error': 'Paramètres invalides' });
   }
 
-  models.User.findOne({
+  await models.User.findOne({
     where: { id: userId }
   })
   .then(async function(user){

@@ -60,7 +60,7 @@ exports.findAllProfile = (req, res) =>{
   .catch(error => res.status(400).json({ error }));
 }
 
-exports.updateUserProfile = function(req, res) {
+exports.updateUserProfile = async function(req, res) {
   // Getting auth header
   const headerAuth  = req.headers['authorization'];
   const userId      = auth.getUserId(headerAuth);
@@ -76,12 +76,12 @@ exports.updateUserProfile = function(req, res) {
   const bio = req.body.bio;
   
   
-  models.User.findOne({
+  await models.User.findOne({
     attributes: ['id', 'bio', 'firstname', 'lastname', 'profilePhoto'],
     where: { id: userId }
-  }).then(function (userFound) {
+  }).then(async function (userFound) {
     if(userFound) {
-      userFound.update({
+      await userFound.update({
         firstname: (firstname ? firstname : userFound.firstname),
         lastname: (lastname ? lastname : userFound.lastname),
         username: (username ? username : userFound.username),

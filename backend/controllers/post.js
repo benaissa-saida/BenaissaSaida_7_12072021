@@ -10,7 +10,7 @@ const CONTENT_LIMIT = 4;
 
 //routes 
 
-exports.createPost = (req, res, next) => {
+exports.createPost = async (req, res, next) => {
   const headerAuth  = req.headers['authorization'];
   const userId      = auth.getUserId(headerAuth);
   
@@ -26,7 +26,7 @@ exports.createPost = (req, res, next) => {
     return res.status(400).json({ 'error': 'Paramètres invalides' });
   }
 
-  models.User.findOne({
+  await models.User.findOne({
     where: { id: userId }
   })
   .then(async function(user){
