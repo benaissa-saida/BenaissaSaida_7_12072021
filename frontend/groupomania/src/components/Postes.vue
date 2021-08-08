@@ -18,14 +18,14 @@
                 </div>   
                 <div class=" pb-9 flex items-center">
                     <label class="mb-3 text-primary" for="attachment"/>
-                    <button @click="$refs.image.click()"><i class="text-lg text-red-300 mr-4 far fa-image"></i></button>
+                    <button name="send-image" @click="$refs.image.click()"><i class="text-lg text-red-300 mr-4 far fa-image"></i></button>
                     <input style="display: none" type="file" ref="image" @change="onFileSelected()">
                 </div>
                 <div v-if="submitStatus == 'error_create'" class="text-red-600">
                     Il manque l'un des paramètres, veuillez tout remplir !
                 </div>
                 <div class="relative">
-                    <button :class="{'button--disabled' : !validatedFields}" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
+                    <button :class="{'button--disabled' : !validatedFields}" name="send-post" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
                         <span v-if="submitStatus == 'loading'">Envoie...</span>  
                         <span v-else >Publier</span>      
                     </button> 
@@ -47,7 +47,7 @@
                         class="h-12 w-12 rounded-full flex-none"/>
                         <img  v-else src="../assets/icon/icon.png" class="h-10 w-10 rounded-full flex-none"/>
                         <p class="mt-3 ml-3 font-semibold"> {{ post.userName }} </p>
-                        <button v-if="user.id == post.UserId || user.id == 1" @click="deletePost(post)" class="ml-auto mt-2">
+                        <button v-if="user.id == post.UserId || user.id == 1" @click="deletePost(post)" name="delete" class="ml-auto mt-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -57,7 +57,7 @@
                         
                         <h2 class="text-base text-center py-2">{{ post.title }}</h2>
                         <div class="flex align-center justify-center">
-                            <img v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg')" :src="post.attachment" alt="image-video">
+                            <img id="post_img" v-if="post.attachment !== '' && post.attachment !== null && (post.attachment.split('.')[2] === 'png' || 'jpg')" :src="post.attachment" alt="image-video">
                         </div>
                         <p class="text-sm py-2">{{ post.content }}</p>
                     </div>
@@ -155,6 +155,11 @@ import axios from "axios";
 </script>
 
 <style scoped>
+post_img {
+  width: 50% !important;
+  height: 50% !important;
+}
+
 .button--disabled {
     background:#cecece;
     color:#ececec

@@ -22,11 +22,11 @@
       </div>
       
       <div class="form-row">
-        <button @click="login()" class="button" :class="{'button--disabled' : !validatedFields}" v-if="mode == 'login'">
+        <button @click="login()" name="login" class="button" :class="{'button--disabled' : !validatedFields}" v-if="mode == 'login'">
           <span v-if="status == 'loading'">Connexion en cours...</span>
           <span v-else>Connexion</span>
         </button>
-        <button @click="createAccount()" class="button" :class="{'button--disabled' : !validatedFields}" v-else>
+        <button @click="createAccount()" name="signup" class="button" :class="{'button--disabled' : !validatedFields}" v-else>
           <span v-if="status == 'loading'">Création en cours...</span>
           <span v-else>Créer mon compte</span>
         </button>

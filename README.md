@@ -1,18 +1,19 @@
-# Groupomania
+# *Groupomania*
 
 ## Créez un réseau social d’entreprise.
 
------------------
+-----------------------
 
 ## Mission
 
 Construire un réseau social interne pour l'entreprise *Groupomania*.
 
-* Personnaliser le contenu envoyé à un client web.
-* Authentifier un utilisateur et maintenir sa session.
-* Gérer un stockage de données à l'aide de SQL.
-* Implémenter un stockage de données sécurisé en utilisant SQL.
-
+- Authentifier un utilisateur et maintenir sa session.
+- Personnaliser le contenu envoyé à un client web.
+- Gérer un stockage de données à l'aide de SQL.
+- Utiliser une base de données relationnelles qui se manipule avec le langage SQL.
+- Les données de connexion doivent également être sécurisées. 
+- Les pages devront respecter les standards WCAG.
 
 ***
 
@@ -63,7 +64,7 @@ Le backend lancé, il faudra s'attaquer au front
 ## Lancer le frontend
 
 ```
-Fait avec Vue
+Fait avec Vue, VueX, 
 
 ```
 

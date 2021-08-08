@@ -9,7 +9,7 @@
       </router-link>
       
       <!--mobile menu button -->
-      <button @click="toggle" class="mobile-menu-button focus:outline-none hover:bg-red-100 ">
+      <button @click="toggle" name="toggle" class="mobile-menu-button focus:outline-none hover:bg-red-100 ">
         <i id="bar" class="fas fa-bars"></i>
       </button>
     </div> 
