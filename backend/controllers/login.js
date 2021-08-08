@@ -52,7 +52,6 @@ exports.signup = function(req, res) {
           username: username,
           password: hash,
           bio: bio,
-          isAdmin: 0
         })
         .then(newUser =>{ res.status(201).json({ 'userId': newUser.id })
         })
