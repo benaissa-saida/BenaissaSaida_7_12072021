@@ -2,11 +2,11 @@
     <div class="md:flex relative min-h-screen h-screen">
         <Nav />
         <div class="lg:w-1/2 w-full h-full md:overflow-y-scroll">
-            <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
+            <div class="px-5 py-3 flex items-center justify-between">
                 <h1 class="text-xl font-bold">Profile</h1>
                 <i class="far fa-star text-xl text-red-300"></i>
             </div>
-            <div class="container lg:mx-auto">
+            <div class="md:container">
                 <div class="lg:block ml-4 mt-3">
                     <div class="flex flex-col items-center justify-center">
                     <img v-if="user.profilePhoto === null" src="../assets/icon/icon.png" alt="image-profil" class="h-40 w-40 rounded-full flex-none"/>
@@ -24,7 +24,7 @@
 
                 <div v-if="posts.some((post) => user.id == post.UserId)" class="flex flex-col align-center jystify-center">
                     <div v-for="(post, id) in filterPost.slice().reverse()" :key="id">
-                        <div  class="w-full p-4 border-b hover:bg-lighter flex flex-col">
+                        <div  class="w-full p-4 flex flex-col">
                             <div class="flex mr-4" >
                                 <img v-if="users.map((user) => {
                                     if (user.id === post.UserId) 
@@ -87,7 +87,7 @@ export default {
             user: []
         }
     },
-    mounted() {
+    created() {
         if (this.$store.state.user.userId == -1) {
             this.$router.push('/');
             return ;

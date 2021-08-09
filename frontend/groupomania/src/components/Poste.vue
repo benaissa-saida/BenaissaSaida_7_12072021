@@ -100,11 +100,11 @@ export default ({
 
         }
     },
-    mounted() {
+    created() {
         let user = localStorage.getItem('user');
         user = JSON.parse(user);
         axios.defaults.headers.common['Authorization'] = user.token;
-
+        
         axios.get(`http://localhost:3000/api/posts/${this.id}`)
         .then(response => {
             this.post = response.data.post
@@ -112,10 +112,11 @@ export default ({
                this.comments = response.data.comments
            }            
         })
-
+        
         this.$store.dispatch('getUsers');
         this.$store.dispatch('getUserInfos');
     },
+    
     computed: {
         ...mapState({
             user: 'userInfos',

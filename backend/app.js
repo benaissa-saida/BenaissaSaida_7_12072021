@@ -1,5 +1,5 @@
 // Imports
-const express = require('express');
+const express = require('express'); //framework
 const path = require('path');
 
 //varibales sécurité 
@@ -55,7 +55,7 @@ app.use(noCache());
 //Methode qui neutralise l'en-tête et empêcher les attaques ciblés 
 app.disable('x-powered-by');
 
-// Parser du JSON
+// Parser du JSON pour récup les paramètres dans le body de la requête
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

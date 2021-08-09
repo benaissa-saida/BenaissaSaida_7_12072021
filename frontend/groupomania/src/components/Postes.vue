@@ -24,8 +24,8 @@
                 <div v-if="submitStatus == 'error_create'" class="text-red-600">
                     Il manque l'un des paramètres, veuillez tout remplir !
                 </div>
-                <div class="relative">
-                    <button :class="{'button--disabled' : !validatedFields}" name="send-post" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full absolute bottom-0 right-0">
+                <div>
+                    <button :class="{'button--disabled' : !validatedFields}" name="send-post" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full">
                         <span v-if="submitStatus == 'loading'">Envoie...</span>  
                         <span v-else >Publier</span>      
                     </button> 

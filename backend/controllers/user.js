@@ -5,8 +5,12 @@ const fs        = require('fs');
 
 exports.findOneProfile = (req, res) => {
     // Getting auth header
-    const headerAuth  = req.headers['authorization'];
+    const headerAuth  = req.headers['authorization']; 
+    /* vérifie si le token est valide et du coup 
+    de récupérer l'id de l'utilisateur */
     const userId      = auth.getUserId(headerAuth);
+    /* on fait appel à l'auth en passant en paramètre 
+    l'entête d'authorisation */
      
     if (userId < 0){
         res.status(400).json({ 'error': 'mauvais token' });
