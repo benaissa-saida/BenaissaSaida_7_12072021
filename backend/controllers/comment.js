@@ -1,7 +1,6 @@
 //Imports
 const models    = require('../models');
 const auth = require('../middleware/auth');
-const { post } = require('../routes/comment');
 
 // Constants
 const COMMENT_LIMIT   = 2;
