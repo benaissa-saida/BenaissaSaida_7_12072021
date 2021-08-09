@@ -13,7 +13,6 @@ import Postes from '@/components/Postes.vue';
 import Amis from '@/components/Amis.vue';
 export default {
   mounted: function () {
-    console.log(this.$store.state.user);
     if (this.$store.state.user.userId == -1) {
       this.$router.push('/');
       return ;

@@ -13,7 +13,6 @@ Construire un réseau social interne pour l'entreprise *Groupomania*.
 - Gérer un stockage de données à l'aide de SQL.
 - Utiliser une base de données relationnelles qui se manipule avec le langage SQL.
 - Les données de connexion doivent également être sécurisées. 
-- Les pages devront respecter les standards WCAG.
 
 ***
 
