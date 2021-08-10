@@ -61,7 +61,7 @@ export default {
             let response = confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? ')
             if (response) {
                 this.$store.dispatch('deleteUser', user)
-                this.$router.go('/');
+                this.$router.go('/home');
                 return;
             }
         },
