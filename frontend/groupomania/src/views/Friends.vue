@@ -44,8 +44,7 @@ export default {
         Nav,
         
     },
-    created: function () {
-        console.log(this.$store.state.user);
+    mounted(){
         if (this.$store.state.user.userId == -1) {
             this.$router.push('/');
             return ;

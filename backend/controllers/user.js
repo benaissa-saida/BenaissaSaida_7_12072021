@@ -115,14 +115,17 @@ exports.deleteOneUser = async (req, res) => {
  
    try{
     const user = await models.User.findOne({ where: { id: userId }})
-
-    const filename = user.profilePhoto.split('/images/')[1];
-    fs.unlink(`images/${filename}`, () => {
+    if (user.profilePhoto !== null){
+      const filename = user.profilePhoto.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => {
+        user.destroy()
+        return res.json({ message : 'Utilisateur supprimé'})
+      })
+    } else{
       user.destroy()
       return res.json({ message : 'Utilisateur supprimé'})
-    })
+    }
     
-
   }catch (err) {
     
     return res.status(500).json({err})

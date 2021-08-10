@@ -112,11 +112,11 @@ export default ({
                this.comments = response.data.comments
            }            
         })
-        
+    },
+    mounted(){
         this.$store.dispatch('getUsers');
         this.$store.dispatch('getUserInfos');
     },
-    
     computed: {
         ...mapState({
             user: 'userInfos',

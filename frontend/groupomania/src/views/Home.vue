@@ -12,7 +12,8 @@ import Nav from '@/components/Nav.vue';
 import Postes from '@/components/Postes.vue';
 import Amis from '@/components/Amis.vue';
 export default {
-  created: function () {
+  
+  mounted(){
     if (this.$store.state.user.userId == -1) {
       this.$router.push('/');
       return ;

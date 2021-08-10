@@ -143,8 +143,8 @@ const store = createStore({
         if (response.status == 200 || response.status == 204)
         commit('deleteUser', user.id)
       })
-      .catch(function() {
-
+      .catch(function(err) {
+        console.log(err)
       })
     },
     deleteProfileUser: ({commit}, user) => {
