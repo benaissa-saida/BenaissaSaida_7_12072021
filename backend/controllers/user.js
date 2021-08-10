@@ -118,11 +118,15 @@ exports.deleteOneUser = async (req, res) => {
     if (user.profilePhoto !== null){
       const filename = user.profilePhoto.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
-        user.destroy()
+        user.destroy({
+          where: {id: userId}
+        })
         return res.json({ message : 'Utilisateur supprimé'})
       })
     } else{
-      user.destroy()
+      user.destroy({
+        where: {id: userId}
+      })
       return res.json({ message : 'Utilisateur supprimé'})
     }
     
