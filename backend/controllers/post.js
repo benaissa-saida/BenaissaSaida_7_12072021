@@ -59,7 +59,7 @@ exports.findOnePost = async (req, res) => {
   }
   
   await models.Post.findOne({
-    attributes: ['id', 'title', 'userName', 'userId', 'content', 'attachment'],
+    attributes: ['id', 'title', 'userName', 'userId', 'content', 'attachment', 'createdAt'],
     where: { id: req.params.id },
   })
   .then(async function(post) {

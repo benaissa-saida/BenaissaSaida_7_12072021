@@ -15,8 +15,10 @@
                                 return user.profilePhoto;}).join('')" 
                             alt="image-profil" class="h-12 w-12 rounded-full flex-none"/>
                             <img  v-else src="../assets/icon/icon.png" alt="image-profil" class="h-10 w-10 rounded-full flex-none"/>
-                            <p class="mt-3 ml-3 font-semibold"> {{ post.userName }} </p>
-                            
+                            <div class=" ml-3 flex flex-col">
+                                <p class="font-semibold"> {{ post.userName }} </p>
+                                <p class="font-thin text-sm"> {{formattedDate}} </p>
+                            </div>
                             <button v-if="user.id == post.userId || user.id == 1" @click="deletePost(post)" name="delete" class="ml-auto w-8 h-8 ">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -82,6 +84,7 @@ import Nav from '@/components/Nav.vue';
 import Amis from '@/components/Amis.vue';
 import { mapState } from 'vuex';
 import axios from 'axios'
+import moment from 'moment'
 
 export default ({
     name: 'Poste',
@@ -132,6 +135,9 @@ export default ({
             }
                 
         },
+        formattedDate (){
+            return moment(this.post.createdAt).format('DD-MM-YYYY');
+        }
     },
     methods: {
         deletePost: function (post) {
