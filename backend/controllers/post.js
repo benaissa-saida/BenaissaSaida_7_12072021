@@ -1,6 +1,6 @@
 //Imports
 const models    = require('../models');
-const auth = require('../middleware/auth');
+const auth = require('../utils/auth');
 const fs = require('fs');
 
 // Constants

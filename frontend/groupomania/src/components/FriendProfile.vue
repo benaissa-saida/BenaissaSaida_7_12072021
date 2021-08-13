@@ -97,9 +97,6 @@ export default {
             this.user = response.data   
                
         })
-        
-    },
-    mounted(){
         this.$store.dispatch('getUsers');
         this.$store.dispatch('getUserInfos');
         this.$store.dispatch('getPostsInfos');

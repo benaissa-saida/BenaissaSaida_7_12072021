@@ -104,8 +104,7 @@ export default {
     Amis
 
   },
-  mounted: function () {
-    console.log(this.$store.state.user);
+  created: function () {
     if (this.$store.state.user.userId == -1) {
       this.$router.push('/');
       return ;

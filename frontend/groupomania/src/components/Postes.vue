@@ -149,6 +149,7 @@ import moment from 'moment';
                 ));
                 
             },
+
             deletePost: function (post) {
                 let response = confirm('Êtes-vous sûr de vouloir supprimer ce post ? ')
                 if (response) {

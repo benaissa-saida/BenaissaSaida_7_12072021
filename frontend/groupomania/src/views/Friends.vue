@@ -44,7 +44,7 @@ export default {
         Nav,
         
     },
-    mounted(){
+    created(){
         if (this.$store.state.user.userId == -1) {
             this.$router.push('/');
             return ;
@@ -66,7 +66,7 @@ export default {
             let response = confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? ')
             if (response) {
                 this.$store.dispatch('deleteUser', user)
-                this.$router.go('/');
+                this.$router.go('/home');
                 return;
             }
         },

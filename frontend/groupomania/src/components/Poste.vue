@@ -115,8 +115,6 @@ export default ({
                this.comments = response.data.comments
            }            
         })
-    },
-    mounted(){
         this.$store.dispatch('getUsers');
         this.$store.dispatch('getUserInfos');
     },
@@ -144,7 +142,7 @@ export default ({
             let response = confirm('Êtes-vous sûr de vouloir supprimer ce post ? ')
             if (response) {
                 this.$store.dispatch('deletePost', post)
-                this.$router.go('/home');
+                this.$router.push('/home');
                 return;
             }
         },
@@ -158,7 +156,7 @@ export default ({
                 comment: this.comment
             }).then(response => {
                 this.comment = response.data.comment
-                this.$router.go('/home');
+                this.$router.go('/');
             }).catch((error) => (
                 (this.submitStatus = "error_create"), console.log(error)
             ));
@@ -168,7 +166,7 @@ export default ({
             let response = confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ? ')
             if (response) {
                 this.$store.dispatch('deleteComment', comment)
-                this.$router.go("/home");
+                this.$router.go('/');
                 return;
             }
         },
