@@ -15,13 +15,35 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    email: DataTypes.STRING,
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: {
+          msg: 'Email address must be valid.'
+        }
+      },
+      unique: {
+          msg: 'already exists',
+       },
+    },
+    username: {
+      type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: [4,13],
+          msg: 'Le pseudo doit être compris entre 4 et 13 charactères.'
+          
+        },
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
     bio: DataTypes.STRING,
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,
     profilePhoto: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',

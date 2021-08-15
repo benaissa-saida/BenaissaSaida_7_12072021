@@ -19,7 +19,7 @@
                                 <p class="font-semibold"> {{ post.userName }} </p>
                                 <p class="font-thin text-sm"> {{formattedDate}} </p>
                             </div>
-                            <button v-if="user.id == post.userId || user.id == 1" @click="deletePost(post)" name="delete" class="ml-auto w-8 h-8 ">
+                            <button v-if="user.id == post.userId || user.isAdmin == 1" @click="deletePost(post)" name="delete" class="ml-auto w-8 h-8 ">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
@@ -50,7 +50,7 @@
                                     <p class="mb-2">{{ comment.userName }}</p>
                                     <p class="text-sm">{{ comment.comment }}</p>
                                 </div>
-                                <button v-if="user.id == comment.userId || user.id == 1" @click="deleteComment(comment)" name="delete" class="ml-auto flex-end w-8 h-8 ">
+                                <button v-if="user.id == comment.userId || user.isAdmin == 1" @click="deleteComment(comment)" name="delete" class="ml-auto flex-end w-8 h-8 ">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -99,15 +99,9 @@ export default ({
             comments: [], 
             comment: "",
             submitStatus: null,
-
-
         }
     },
     created() {
-        let user = localStorage.getItem('user');
-        user = JSON.parse(user);
-        axios.defaults.headers.common['Authorization'] = user.token;
-        
         axios.get(`http://localhost:3000/api/posts/${this.id}`)
         .then(response => {
             this.post = response.data.post
@@ -147,10 +141,6 @@ export default ({
             }
         },
         submitCom: function (){
-            let user = localStorage.getItem('user');
-            user = JSON.parse(user);
-            axios.defaults.headers.common['Authorization'] = user.token;
-            
             this.submitStatus = "loading"
             axios.post(`http://localhost:3000/api/comments/${this.id}`, {
                 comment: this.comment

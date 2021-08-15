@@ -1,47 +1,30 @@
 //Imports
 const models    = require('../models');
-const auth      = require('../utils/auth');
+const jwtUtils = require('../utils/jwt.utils');
 const fs        = require('fs');
 
-exports.findOneProfile = (req, res) => {
-    // Getting auth header
-    const headerAuth  = req.headers['authorization']; 
-    /* vérifie si le token est valide et du coup 
-    de récupérer l'id de l'utilisateur */
-    const userId      = auth.getUserId(headerAuth);
-    /* on fait appel à l'auth en passant en paramètre 
-    l'entête d'authorisation */
-     
-    if (userId < 0){
-        res.status(400).json({ 'error': 'mauvais token' });
-    }
-
-    models.User.findOne({
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-        where: { id: userId}
-    })
-    .then(user => {
-    if (user) {
-        res.status(201).json(user);
-    } else {
-        res.status(404).json({ 'error': 'Utilisateur introuvable !'});
-    }
-    })
-    .catch(function(err) {
-        res.status(500).json({ 'error': 'Utilisateur impossible à trouver dans la BDD !' });
-    });
-}
-
-exports.findFriendProfile = (req, res) => {
-  const userId = req.params.id
+exports.findOneProfile = (req, res, next) => {
+  // Getting auth header
+  const headerAuth  = req.headers['authorization']; 
+  const userId      = jwtUtils.getUserId(headerAuth);
    
   if (userId < 0){
-      res.status(400).json({ 'error': 'paramètres invalides' });
+      res.status(400).json({ 'error': 'mauvais token' });
   }
 
+    models.User.findOne({
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      where: {id: userId}
+    })
+    .then(user => { res.status(201).json(user)})
+    .catch(error => res.status(404).json({ error }))
+    
+}
+
+exports.findFriendProfile = (req, res, next) => {
   models.User.findOne({
     attributes: ['id', 'firstname', 'lastname', 'username', 'bio', 'profilePhoto'],
-      where: { id: userId}
+    where: { id: req.params.id}
   })
   .then(user => {
   if (user) {
@@ -56,7 +39,6 @@ exports.findFriendProfile = (req, res) => {
 }
 
 exports.findAllProfile = (req, res) =>{
-
   models.User.findAll({
     attributes: { exclude: ['email','password', 'createdAt', 'updatedAt'] },
   })
@@ -67,12 +49,12 @@ exports.findAllProfile = (req, res) =>{
 exports.updateUserProfile = async function(req, res) {
   // Getting auth header
   const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
-  
+  const userId      = jwtUtils.getUserId(headerAuth);
+ 
   if (userId < 0){
-      res.status(400).json({ 'error': 'mauvais token' });
+    res.status(400).json({ 'error': 'mauvais token' });
   }
-  
+
   // Params
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
@@ -82,7 +64,7 @@ exports.updateUserProfile = async function(req, res) {
   
   await models.User.findOne({
     attributes: ['id', 'bio', 'firstname', 'lastname', 'profilePhoto'],
-    where: { id: userId }
+    where: {id: userId}
   }).then(async function (userFound) {
     if(userFound) {
       await userFound.update({
@@ -106,26 +88,26 @@ exports.updateUserProfile = async function(req, res) {
 }
 
 exports.deleteOneUser = async (req, res) => {
-   const userId      = req.params.userId
+
+  const userId      = req.params.userId
  
-   if (userId < 0){
-     res.status(400).json({ 'error': 'paramètre invalide' });
-   }
- 
- 
+  if (userId < 0){
+    res.status(400).json({ 'error': 'paramètre invalide' });
+  }
+
    try{
-    const user = await models.User.findOne({ where: { id: userId }})
+    const user = await models.User.findOne({ where: {id: req.params.userId}})
     if (user.profilePhoto !== null){
       const filename = user.profilePhoto.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
         user.destroy({
-          where: {id: userId}
+          where: {id: req.params.userId}
         })
         return res.json({ message : 'Utilisateur supprimé'})
       })
     } else{
       user.destroy({
-        where: {id: userId}
+        where: {id: req.params.userId}
       })
       return res.json({ message : 'Utilisateur supprimé'})
     }

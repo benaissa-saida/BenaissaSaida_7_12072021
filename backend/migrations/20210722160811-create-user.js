@@ -12,7 +12,6 @@ module.exports = {
       email: {
         allowNull: false,
         type: Sequelize.STRING,
-        unique: true,
       },
       username: {
         allowNull: false,
@@ -37,6 +36,10 @@ module.exports = {
       profilePhoto: {
         allowNull: true,
         type: Sequelize.STRING
+      },
+      isAdmin: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

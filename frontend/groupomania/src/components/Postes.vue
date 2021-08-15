@@ -50,7 +50,7 @@
                             <p class="font-semibold"> {{ post.userName }} </p>
                             <p class="font-thin text-sm"> {{dateTime(post.createdAt)}} </p>
                         </div>
-                        <button v-if="user.id == post.UserId || user.id == 1" @click="deletePost(post)" name="delete" class="ml-auto">
+                        <button v-if="user.id == post.UserId || user.isAdmin == 1" @click="deletePost(post)" name="delete" class="ml-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-content hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -88,6 +88,7 @@ import moment from 'moment';
                 content: "",
                 attachment: null,
                 submitStatus: null,
+
             }
         },
         computed: {
@@ -120,11 +121,6 @@ import moment from 'moment';
                 this.attachment = this.$refs.image.files[0]
             },
             submit(){
-                let user = localStorage.getItem('user');
-                user = JSON.parse(user);
-                axios.defaults.headers.common['Authorization'] = user.token;
-            
-
                 const fd = new FormData();
                 if (this.attachment != null || "") {
                     fd.append('image', this.attachment, this.attachment.filename);
@@ -142,7 +138,7 @@ import moment from 'moment';
                     this.title = response.data
                     this.content = response.data
                     this.attachment = response.data 
-                    this.$router.push("/");
+                    this.$router.go('/');
                 })
                 .catch((error) => (
                     (this.submitStatus = "error_create"), console.log(error)

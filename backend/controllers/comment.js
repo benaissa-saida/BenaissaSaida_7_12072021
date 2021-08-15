@@ -1,16 +1,11 @@
 //Imports
 const models    = require('../models');
-const auth = require('../utils/auth');
-
-// Constants
-const COMMENT_LIMIT   = 2;
-
+const jwtUtils = require('../utils/jwt.utils');
 
 //routes 
-
 exports.createComment = async (req, res, next) => {
   const headerAuth  = await req.headers['authorization'];
-  const userId      = await auth.getUserId(headerAuth)
+  const userId      = await jwtUtils.getUserId(headerAuth);
 
   const postId = req.params.id;
 
@@ -20,16 +15,8 @@ exports.createComment = async (req, res, next) => {
 
   const comment = req.body.comment; 
 
-  if (comment == null ) {
-    return res.status(400).json({ 'error': 'Paramètres manquants' });
-  }
-
-  if (comment.length <= COMMENT_LIMIT) {
-    return res.status(400).json({ 'error': 'Paramètres invalides' });
-  }
-
   await models.User.findOne({
-    where: { id: userId }
+    where: {id: userId}
   })
   .then(async function(user){
   
@@ -68,17 +55,11 @@ exports.findAllComments = (req, res) => {
 }
 
 exports.deleteOneComment = async (req, res) => {
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth)
 
   const commentId = req.params.commentId
-  if (userId <= 0){
-    res.status(400).json({ 'error': 'Mauvais token' });
-  }
  
   try{
     const comment = await models.Comment.findOne({ where: { id: commentId }})
-
 
     await comment.destroy()
     return res.json({ message : 'comment supprimé'})

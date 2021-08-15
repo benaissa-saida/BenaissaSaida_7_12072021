@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
         key : 'username'
       }
     },
-    comment: DataTypes.STRING
+    comment: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true, 
+        min: 2,
+      }
+    },
   }, {
     sequelize,
     modelName: 'Comment',

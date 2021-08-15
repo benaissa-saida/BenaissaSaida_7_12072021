@@ -22,6 +22,7 @@ if (!user) {
       };
   }
 }
+
     
 const store = createStore({
   state: {
@@ -58,12 +59,12 @@ const store = createStore({
       let users = state.users.filter(u => u.id != user.id)
       state.users = users;
     },
-    deleteProfileUser: function (state){
+    deleteAccount: function (state){
       state.user = {
         userId: -1,
         token: '',
       }
-      localStorage.clear();
+      localStorage.removeItem('user');
       
     },
     logout: function (state) {
@@ -71,7 +72,7 @@ const store = createStore({
         userId: -1,
         token: '',
       }
-      localStorage.removeItem('user');
+      localStorage.clear();
     },
     getPosts: function (state, posts) {
       state.posts = posts;
@@ -121,7 +122,7 @@ const store = createStore({
         });
       });
     },
-    getUserInfos: ({commit}) => {
+    getUserInfos: ({commit})=> {
       instance.get('/users/userId')
       .then(function (response) {
         commit('userInfos', response.data);
@@ -147,14 +148,14 @@ const store = createStore({
         console.log(err)
       })
     },
-    deleteProfileUser: ({commit}, user) => {
+    deleteAccount: ({commit}, user) => {
       instance.delete(`/users/${user.id}`)
       .then(function(response){
         if (response.status == 200 || response.status == 204)
-        commit('deleteProfileUser', user.id)
+        commit('deleteAccount', user.id)
       })
-      .catch(function() {
-
+      .catch(function(err) {
+        console.log(err)
       })
     },
     getPostsInfos: ({commit}) => {

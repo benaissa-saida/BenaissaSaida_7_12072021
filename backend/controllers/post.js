@@ -1,30 +1,17 @@
 //Imports
 const models    = require('../models');
-const auth = require('../utils/auth');
+const jwtUtils = require('../utils/jwt.utils');
 const fs = require('fs');
 
-// Constants
-const TITLE_LIMIT   = 2;
-const CONTENT_LIMIT = 4;
-// const ITEMS_LIMIT   = 50;
-
 //routes 
+exports.createPost = async (req, res) => {
+  const headerAuth  = req.headers['authorization']; 
+  const userId      = jwtUtils.getUserId(headerAuth);
 
-exports.createPost = async (req, res, next) => {
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
-  
+
   const title = req.body.title; 
   const content = req.body.content; 
   const attachment = req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "";
-
-  if (title == null || content == null) {
-    return res.status(400).json({ 'error': 'Paramètres manquants' });
-  }
-
-  if (title.length <= TITLE_LIMIT || content.length <= CONTENT_LIMIT) {
-    return res.status(400).json({ 'error': 'Paramètres invalides' });
-  }
 
   await models.User.findOne({
     where: { id: userId }
@@ -51,12 +38,8 @@ exports.createPost = async (req, res, next) => {
 }
 
 exports.findOnePost = async (req, res) => {
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
-   
-  if (userId< 0){
-      res.status(400).json({ 'error': 'Mauvais token' });
-  }
+  const headerAuth  = req.headers['authorization']; 
+  const userId      = jwtUtils.getUserId(headerAuth);
   
   await models.Post.findOne({
     attributes: ['id', 'title', 'userName', 'userId', 'content', 'attachment', 'createdAt'],
@@ -65,7 +48,7 @@ exports.findOnePost = async (req, res) => {
   .then(async function(post) {
     await models.User.findOne({
       attributes: ['userName'],
-      where: { id: userId }
+      where: {id: userId}
     }).then(async function (user){
       await models.Comment.findAll({
         attributes: ['comment', 'userName','id', 'userId'],
@@ -104,16 +87,8 @@ exports.findAllPost = (req, res) => {
 
 
 exports.deleteOnePost = async (req, res) => {
-  const headerAuth  = req.headers['authorization'];
-  const userId      = auth.getUserId(headerAuth);
-
   const postId      = req.params.postId
-  
-  if (userId < 0){
-    res.status(400).json({ 'error': 'Mauvais token' });
-  }
-  
- 
+
   try{
     const post = await models.Post.findOne({ where: { id: postId }})
     const filename = post.attachment.split('/images/')[1];

@@ -5,9 +5,20 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'App',
-  components: {
+  created() {
+
+    axios.interceptors.request.use(
+      (config) => {
+        config.headers.authorization =  `${this.$store.state.user.token}`;
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
   }
 }
 </script>

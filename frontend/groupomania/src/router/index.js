@@ -6,6 +6,7 @@ import Profile from '@/views/Profile.vue';
 import Friends from '@/views/Friends.vue';
 import FriendProfile from '@/components/FriendProfile.vue';
 import UserProfileDelete from '@/components/UserProfileDelete.vue';
+import store from '../store/index'
 
 
 
@@ -15,7 +16,8 @@ const routes = [
         path: '/', 
         component: Login,
         meta: {
-           title: 'Connexion'
+           title: 'Connexion',
+           requiresVisitor: true,
         },
     },
     {
@@ -23,7 +25,8 @@ const routes = [
         path: '/home',
         component: Home,
         meta: {
-            title: 'Accueil'
+            title: 'Accueil',
+            requiresAuth: true,
         },
     },
     { 
@@ -32,7 +35,8 @@ const routes = [
         component: Poste, 
         props:true,
         meta: {
-            title: 'Poste'
+            title: 'Poste',
+            requiresAuth: true,
         },
     },
     { 
@@ -41,7 +45,8 @@ const routes = [
         component: Profile, 
         props:true,
         meta: {
-            title: 'Profile'
+            title: 'Profile',
+            requiresAuth: true,
         },
     },
     {
@@ -49,7 +54,8 @@ const routes = [
         path: '/friends',
         component: Friends,
         meta: {
-            title: 'Amis'
+            title: 'Amis',
+            requiresAuth: true,
         },
     },
     { 
@@ -58,7 +64,8 @@ const routes = [
         component: FriendProfile, 
         props:true,
         meta: {
-            title: 'Profile amis'
+            title: 'Profile amis',
+            requiresAuth: true,
         },
     },
     { 
@@ -66,6 +73,7 @@ const routes = [
         path: '/UserProfileDelete', 
         component: UserProfileDelete, 
         props:true,
+        
     },
     
 ];
@@ -74,6 +82,28 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((routes) => routes.meta.requiresAuth)) {
+      if (!store.state.user.token) {
+        next({
+          name: 'login'
+        });
+      } else {
+        next();
+      }
+    } else if (to.matched.some((routes) => routes.meta.requiresVisitor)) {
+      if ((store.state.user.token)) {
+        next({
+          name: 'home' || 'poste' || 'profile' || 'friends' || 'friendProfile',
+        });
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  });
 
 router.afterEach((to, from) => {
     console.log(from, to);

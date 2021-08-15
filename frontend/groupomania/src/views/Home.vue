@@ -14,10 +14,6 @@ import Amis from '@/components/Amis.vue';
 export default {
   
   created(){
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push('/');
-      return ;
-    }
     this.$store.dispatch('getUsers');
     this.$store.dispatch('getUserInfos');
     this.$store.dispatch('getPostsInfos');

@@ -20,7 +20,7 @@
 
           <div>
             <div class="mt-3 flex items-center justify-around" v-if="mode === 'userProfile'">
-              <button @click="deleteProfileUser(user)" name="delete" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full">
+              <button @click="deleteAccount(user)" name="delete" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full">
                 Supprimer
               </button>
               <button @click="switchToModifProfile()" name="modifier" class="h-10 px-4 text-white font-semibold bg-red-600 hover:bg-red-400 focus:outline-none rounded-full">
@@ -105,10 +105,6 @@ export default {
 
   },
   created: function () {
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push('/');
-      return ;
-    }
     this.$store.dispatch('getUsers');
     this.$store.dispatch('getUserInfos');
   },
@@ -139,11 +135,7 @@ export default {
       this.profilePhoto = this.$refs.image.files[0]
       console.log(this.profilePhoto)
     },
-    submit(){
-      let user = localStorage.getItem('user');
-      user = JSON.parse(user);
-      axios.defaults.headers.common['Authorization'] = user.token;
-            
+    submit(){   
 
       const fd = new FormData();
       if (this.profilePhoto != null || "") {
@@ -173,10 +165,10 @@ export default {
       
                 
     },           
-    deleteProfileUser: function(user) {
+    deleteAccount: function(user) {
       let response = confirm('Êtes-vous sûr de vouloir supprimer ce compte? ')
       if (response) {
-        this.$store.dispatch('deleteProfileUser', user)
+        this.$store.dispatch('deleteAccount', user)
         this.$router.push('/userProfileDelete');
         return;
       }
