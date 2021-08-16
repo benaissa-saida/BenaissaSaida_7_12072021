@@ -87,17 +87,34 @@ exports.findAllPost = (req, res) => {
 
 
 exports.deleteOnePost = async (req, res) => {
-  const postId      = req.params.postId
+  // Getting auth header
+  const headerAuth  = req.headers['authorization'];
+  const userId      = jwtUtils.getUserId(headerAuth);
+  const isAdmin      = jwtUtils.getAdmin(headerAuth);
 
-  try{
-    const post = await models.Post.findOne({ where: { id: postId }})
-    const filename = post.attachment.split('/images/')[1];
-    fs.unlink(`images/${filename}`, () => {
-      post.destroy()
-      return res.json({ message : 'Post supprimé'})
-    });
-  }catch (err) {
-    return res.status(500).json({err})
-  }
+
+  await models.User.findOne({
+    where: {id: userId}
+  }).then( async () => {
+    try{
+      const post = await models.Post.findOne({ where: { id: req.params.id }})
+
+      if (userId == post.UserId || isAdmin === true){
+        const filename = post.attachment.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
+          post.destroy()
+          return res.json({ message : 'Post supprimé'})
+        });
+      } else {
+        res.status(404).json({ 'error': 'Problème authentification' });
+      }
+    }catch (err) {
+      return res.status(500).json({err: 'haha'})
+    }
+  }).catch(function (err) {
+    return res.status(500).json({ 'error': err })
+  });
+  
+
 }
 

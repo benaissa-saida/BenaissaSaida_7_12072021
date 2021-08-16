@@ -13,6 +13,6 @@ router.post('/new', multer, postCtrl.createPost)
 router.get('/:id', auth, postCtrl.findOnePost);
 router.get('/', auth, postCtrl.findAllPost);
 
-router.delete('/:postId', auth, postCtrl.deleteOnePost)
+router.delete('/:id', auth, postCtrl.deleteOnePost)
 
 module.exports = router;

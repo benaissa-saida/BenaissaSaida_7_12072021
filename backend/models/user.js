@@ -20,11 +20,12 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isEmail: {
           msg: 'Email address must be valid.'
-        }
+        },
+        notEmpty: true,
       },
       unique: {
-          msg: 'already exists',
-       },
+        msg: 'already exists',
+      },
     },
     username: {
       type: DataTypes.STRING,
@@ -32,12 +33,15 @@ module.exports = (sequelize, DataTypes) => {
         len: {
           args: [4,13],
           msg: 'Le pseudo doit être compris entre 4 et 13 charactères.'
-          
         },
+        notEmpty: true,
       }
     },
     password: {
       type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+      }
     },
     bio: DataTypes.STRING,
     firstname: DataTypes.STRING,

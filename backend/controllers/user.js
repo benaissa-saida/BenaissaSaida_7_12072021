@@ -88,16 +88,16 @@ exports.updateUserProfile = async function(req, res) {
 }
 
 exports.deleteOneUser = async (req, res) => {
-
-  const userId      = req.params.userId
- 
-  if (userId < 0){
-    res.status(400).json({ 'error': 'paramètre invalide' });
-  }
+    // Getting auth header
+    const headerAuth  = req.headers['authorization'];
+    const userId      = jwtUtils.getUserId(headerAuth);
+    const isAdmin      = jwtUtils.getAdmin(headerAuth);
 
    try{
     const user = await models.User.findOne({ where: {id: req.params.userId}})
-    if (user.profilePhoto !== null){
+    
+    if (userId === user.id || isAdmin === true){
+      if (user.profilePhoto !== null){
       const filename = user.profilePhoto.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
         user.destroy({
@@ -105,13 +105,15 @@ exports.deleteOneUser = async (req, res) => {
         })
         return res.json({ message : 'Utilisateur supprimé'})
       })
-    } else{
-      user.destroy({
-        where: {id: req.params.userId}
-      })
-      return res.json({ message : 'Utilisateur supprimé'})
+      } else{
+        user.destroy({
+          where: {id: req.params.userId}
+        })
+        return res.json({ message : 'Utilisateur supprimé'})
+      }
+    }else {
+      res.status(404).json({ 'error': 'Problème authentification' });
     }
-    
   }catch (err) {
     
     return res.status(500).json({err})

@@ -52,12 +52,6 @@ exports.login = (req, res) => {
   var email    = req.body.email;
   var password = req.body.password;
 
-  if (email == null ||  password == null) {
-    return res.status(400).json({ 'error': 'missing parameters' });
-  }
-
-  // TODO verify mail regex & password length.
-
   models.User.findOne({
     where : {email: email}
   })

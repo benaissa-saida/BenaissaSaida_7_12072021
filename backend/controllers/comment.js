@@ -55,16 +55,30 @@ exports.findAllComments = (req, res) => {
 }
 
 exports.deleteOneComment = async (req, res) => {
+  // Getting auth header
+  const headerAuth  = req.headers['authorization'];
+  const userId      = jwtUtils.getUserId(headerAuth);
+  const isAdmin      = jwtUtils.getAdmin(headerAuth);
 
-  const commentId = req.params.commentId
- 
-  try{
-    const comment = await models.Comment.findOne({ where: { id: commentId }})
-
-    await comment.destroy()
-    return res.json({ message : 'comment supprimé'})
-  }catch (err) {
-    return res.status(500).json({err})
-  }
+  await models.User.findOne({
+    where: { id: userId}
+  }).then( async () => {
+    try{
+      const comment = await models.Comment.findOne({ where: { id: req.params.id }})
+        if (userId == comment.userId || isAdmin === true){
+          
+          await comment.destroy()
+          return res.json({ message : 'comment supprimé'})
+        } else {
+          res.status(404).json({ 'error': 'Problème authentification' });
+        }
+      }catch (err) {
+        return res.status(500).json({err : 'haha'})
+      }
+  })
+  .catch(function (err) {
+    return res.status(500).json({ 'error': err })
+  });
+  
 }
 
